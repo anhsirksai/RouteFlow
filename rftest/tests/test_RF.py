@@ -2,16 +2,17 @@ import sys
 import logging
 import time
 import argparse
-import unittest
+#import unittest
 import os
+import pytest
 
-from execanddump import DumpToFile
+from utils import DumpToFile
 
-class RFTest(unittest.TestCase):
+class TestRF():
 
     """
     defnition to check status of openVswitch process.
-    :test_OVS_Status: calls the function execute and passes 
+    :test_OVS_Status: calls the function execute and passes
         1. command
         2. path
         3. log file name
@@ -22,5 +23,3 @@ class RFTest(unittest.TestCase):
         ins.execute(['ps', 'aux', '|', 'grep', 'ovs'], os.getcwd() , "ovsStatus","txt")
         ins.execute(['ps', 'aux'], os.getcwd() , "allStatus", "txt")
 
-
-# def execute(self,command,filepath,filename):

@@ -9,7 +9,7 @@ class DumpToFile(object):
         self.tangerine = "And now a thousand years between"
 
     """
-    Command to execute the os commands required. Runs the commands in background and 
+    Command to execute the os commands required. Runs the commands in background and
     capture the output.
     command : Command to run.
     filepath : location to store output file. should not be appended by "/" at the end.
@@ -23,7 +23,7 @@ class DumpToFile(object):
         #lines_iterator_error = iter(popen.stderr.readline, c"")
 
         if filetype == "json":
-            dumpfile = filepath+"/" + filename + ".output" + ".json"
+            dumpfile = filepath+"/output/" + filename + ".output" + ".json"
             try:
                 os.remove(dumpfile)
             except OSError:
@@ -32,7 +32,7 @@ class DumpToFile(object):
                 for line in lines_iterator:
                     json.dump(line,jsonfile)
         elif filetype == "txt":
-            dumpfile = filepath+"/" + filename + ".output" + ".txt"
+            dumpfile = filepath+"/output/" + filename + ".output" + ".txt"
             try:
                 os.remove(dumpfile)
             except OSError:
