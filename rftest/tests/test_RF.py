@@ -6,6 +6,8 @@ import os
 import pytest
 import logging
 import subprocess
+import json
+import fnmatch
 
 #from utils import DumpToFile
 
@@ -31,40 +33,67 @@ class Tests:
     }
 
     def __init__(self):
-        mongoport = 27017
-        containers = ['rfvmA','rfvmB']
         self.testsToRun = {'ovs':True, 'containers':False, 'rfapps':True}
-        self.testsParams = {'mongo':mongoport, 'containers':containers, 'rfapps':['rfproxy','rfserver']}
+        self.testsParams = {'mongo':27017, 'containers':['rfvmA','rfvmB'], 'rfapp':['rfproxy','rfserver']}
+
+        #This can be a single dictionary. txt terminal json and raw.
         self.outputFormat = {'txt':False, 'terminal':False}
         self.outputModes = {'json':False, 'raw':False}
         self.use_pytest = False
 
 
     #def setTestsToRun(self, *args, **kwargs):
-    def setTestsToRun(self, *args):
+    def setTestsToRun(self, isPytest,**kwargs):
         '''
         fill self.testsToRun with proper arguments
         like lxc, ovs, rfserver, rfproxy,.... true or false
 
         define if tests will use pytest or not (self.use_pytest = False)
         '''
-        pass
+        self.use_pytest = isPytest
+
+        #If kwargs is empty leave the testsToRun dictionary with default arguments.
+        if kwargs:
+            self.testsToRun.clear()
+            for key,tests  in kwargs.items():
+                self.testsToRun[key] = tests
 
 
     def configureTests(self, **kwargs):
         '''
         fill self.testsParams with arguments
         '''
-        pass
+        if kwargs:
+            self.testsParams.clear()
+            for key,param in kwargs.items():
+                self.testsParams[key] = param
 
-    def setTestsOutput(self, *args, **kwargs):
+    #def setTestsOutput(self, *args, **kwargs):
+    def setTestsOutputFormat(self, **kwargs):
         '''
         check if tests results must be saved
         in txt file or sent to terminal
         in json or raw formats
         (first let`s save in raw format)
         '''
-        pass
+        self.outputFormat.clear()
+        if kwargs:
+            for key,formats in kwargs.items():
+                self.outputFormat[key] = formats
+
+    def setTestsOutputModes(self, **kwargs):
+        '''
+        check if tests results must be saved
+        in txt file or sent to terminal
+        in json or raw formats
+        (first let`s save in raw format)
+        '''
+        self.outputModes.clear()
+        if kwargs:
+            for key,modes in kwargs.items():
+                self.outputModes[key] = modes
+        del self.outputModes['raw']
+        self.outputModes['raw'] = True
 
     def setup(self,name,output_dir):
         '''
@@ -85,14 +114,11 @@ class Tests:
             - returns a dict (ex: self.setupTests) with teststorun:classes objects
             following self.testParams
         this dict will be used to be used in runTests function
-        '''
-        logger = setLoggers(name,output_dir)
 
-    def setLoggers(name,output_dir):
-        '''
         :name: used to print the class name in the get logger.
         :output_dir: directory to store logs
         '''
+
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
 
@@ -112,6 +138,21 @@ class Tests:
 
         return logger
 
+    def findTests(self):
+        '''
+        for testsToRun create a function that reads self.testsToRun and do the following:
+                - look for test_ files in dir and subdir (ex: test_ovs) and load it importing
+                its class (ex  from test_ovs import OVS - class name associated with ovs in CATALOGUE)
+                - returns a dict (ex: self.setupTests) with teststorun:classes objects
+                following self.testParams
+            this dict will be used to be used in runTests function
+        '''
+        path = os.getcwd()# This should be pointing to /RouteFlow/rftest/tests
+        matches = []
+        for root, dirnames, filenames in os.walk(path):
+           for filename in fnmatch.filter(filenames, 'test_*'):
+               matches.append(os.path.join(filename)) #filename will only return the filename for files even in subdirectory.
+
     def runTests(self):
         '''
         Two approaches here depending on self.use_pytest = True or False:
@@ -125,7 +166,10 @@ class Tests:
         '''
         # call setup with the name argument. This name will be used by logger.
         # The name is an itervalue from self.testsToRun dictionary. Pass each key as an argument, if the corresponding value is true.
-        pass
+        self.setTestsOutputModes() #This line is temporary. remove it if it is visible in vandervecken.
+        for key,tests in self.testsToRun.items():
+            if tests == True:
+               logger =  setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
 
 class RFUnitTests(object):
@@ -134,13 +178,14 @@ class RFUnitTests(object):
         self.logger = logger
         self.tests = {}
 
-
     def evaluate(self, capfd):
         '''
         for each process in self.tests run it using capfd
         This function only execute the commands, get the output/err,
         return them as {command: {'out':output,'err':err} )
         '''
+        #logger.info('TestOVS Network ovs-vsctl')
+        #subprocess.call('ovs-vsctl show | grep dp0', shell = True)
         pass
 
     def verify(self, tests_out):
@@ -177,143 +222,6 @@ class RFUnitTests(object):
         '''
         pass
 
-
-class OVS(RFUnitTests):
-
-    '''
-    TESTS contain association of commands and a dict containing
-    the method of evaluation of the command and the expected output
-    '''
-    TESTS = {
-            'ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},
-            'ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},
-    }
-
-    def __init__(self, logger):
-        super().__init__(logger)
-
-
-    def addTestsDefault(self):
-        self.tests = TESTS
-
-    def addTest(self, cmd, method, output):
-        '''
-        add in self.tests new tests following the TEST structure
-        '''
-        pass
-
-    def setTestsParams(self, cmd, param):
-        '''
-        Define for example self.containernames, self.mongoport, self.controllerport
-        for Container, Mongo, Controller classes respectively
-        In this case modify cmd in self.tests
-        '''
-        pass
-
-    def run_tests(self):
-        '''
-        basically runs methods inherited with self.tests attribute
-        self.evaluate
-        self.verify
-        self.analyse
-        '''
-        pass
-
-
-    def test_netwokvsctl(self, logger, capfd):
-        logger.info('TestOVS Network ovs-vsctl')
-        subprocess.call('ovs-vsctl show | grep dp0', shell = True)
-        out,err = capfd.readouterr()
-        logger.info("\n ==== TestOVS Network ovs-vsctl ==== \n ")
-        logger.info("OUTPUT\n %s", out)
-        logger.info("ERROR\n %s", err)
-        assert out.find("dp0") != -1
-
-    def test_netwokdpctl(self,capfd):
-        self.logger.info('TestOVS Network ovs-dpctl')
-        subprocess.call('ovs-dpctl show | grep dp0', shell = True)
-        out,err = capfd.readouterr()
-        with open("testout.txt","a") as txtfile:
-             txtfile.write("\n ==== TestOVS Network ovs-dpctl ==== \n ")
-             txtfile.write(out)
-        with open("testerr.txt","a") as txtfile:
-             txtfile.write("\n ==== TestOVS Network ovs-dpctl ==== \n ")
-             txtfile.write(err)
-        assert out.find("dp0") != -1
-
-
-    def test_processdbserver(self,capfd):
-        self.logger.info('TestOVS Process ovsdb server')
-        subprocess.call('ps aux | grep ovs', shell = True)
-        out,err = capfd.readouterr()
-        with open("testout.txt","a") as txtfile:
-             txtfile.write("\n ==== TestOVS Process ovsdb server === \n ")
-             txtfile.write(out)
-        with open("testerr.txt","a") as txtfile:
-             txtfile.write("\n ==== TestOVS Process ovsdb server === \n ")
-             txtfile.write(err)
-        assert out.find("ovsdb-server") != -1
-
-    def test_processswitchd(self,capfd):
-        self.logger.info('TestOVS Process ovs-vswitchd')
-        subprocess.call('ps aux | grep ovs', shell = True)
-        out,err = capfd.readouterr()
-        with open("testout.txt","a") as txtfile:
-             txtfile.write("\n ==== TestOVS Process ovs-vswitchd === \n ")
-             txtfile.write(out)
-        with open("testerr.txt","a") as txtfile:
-             txtfile.write("\n ==== TestOVS Process ovs-vswitchd === \n ")
-             txtfile.write(err)
-        assert out.find("ovs-vswitchd") != -1
-
-    def test_specific(self,capfd):
-        self.logger.info('TestOVS Specific')
-        #pass
-
-    def run_tests():
-        self.logger.info('TestOVS testcases start execution')
-        #self.test_netwok()
-        #self.test_process()
-        #self.test_specific()
-
-    def verify_tests():
-        pass
-
-class Testrfserver():
-
-    logger = logging.getLogger('TestRFServer')
-
-    def test_processrfserverrunning(self,capfd):
-        self.logger.info('Test for process rfserver running')
-        subprocess.call('ps aux| grep rfserver', shell = True)
-        out,err = capfd.readouterr()
-        str2 = 'python ./rfserver/rfserver/py'
-        with open("testout.txt","a") as txtfile:
-             txtfile.write("\n ==== Test for process rfserver running ==== \n ")
-             txtfile.write(out)
-        with open("testerr.txt","a") as txtfile:
-             txtfile.write("\n ==== Test for process rfserver running ==== \n ")
-             txtfile.write(err)
-        assert out.find(str2) != -1
-
-class Testrfproxy():
-
-    logger = logging.getLogger('TestRFProxy')
-
-    def test_processrfproxy(self,capfd):
-        self.logger.info('Test for process rfproxy running')
-        subprocess.call('ps aux| grep rfproxy', shell = True)
-        out,err = capfd.readouterr()
-        str2 = 'ryu-manager --use-stderr --ofp-tcp-listen-port=$CONTROLLER_PORT ryu-rfproxy/rfproxy.py'
-        with open("testout.txt","a") as txtfile:
-             txtfile.write("\n ==== Test for process rfproxy running ==== \n ")
-             txtfile.write(out)
-        with open("testerr.txt","a") as txtfile:
-             txtfile.write("\n ==== Test for process rfproxy running ==== \n ")
-             txtfile.write(err)
-        assert out.find(str2) != -1
-
-
 if __name__ == '__main__':
     description = 'RFTest suite, to run the tests and determine the state of system'
     epilog = 'Report bugs to: https://github.com/routeflow/RouteFlow/issues'
@@ -322,18 +230,27 @@ if __name__ == '__main__':
     #islconf = os.path.dirname(os.path.realpath(__file__)) + "/islconf.csv"
 
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
+
     #run pytest(y/n)
     parser.add_argument('-p', '--pytest', default=False, type = bool,
                         help='Run tests with pytest(True/False)')
+
     #accept a list of test modules to be run.
-    parser.add_argument('-tc', '--testcases', choices =['ovs','rfapps','mongo','containers'],
-                        help='Testcases to be run.choose form the list specified')
+    #parser.add_argument('-tc', '--testcases', choices =['ovs','rfapps','mongo','containers'],
+    #                   help='Testcases to be run.choose form the list specified')
+
+    parser.add_argument('-tc', '--testcases', type=json.loads,
+                        help="Testcases to be run.enter on a dict format like :{'ovs':True, 'containers':False, 'rfapps':True}")
 
     #list of containers : either user gives his own container names(option:l) or chooses from the list(option:ln)
     parser.add_argument('-l', '--lxc', nargs='*',
                         help='Lxc container name, should be given to verify, default not supported, zero or more container names accepted')
     parser.add_argument('-ln', '--lxcnames', choices =['rfvm1','b1','b2','rfvmA','rfvmB'],
                         help='Lxc container name, should be given to verify, default not supported,to be choosen from the list')
+
+    #list of rfapps
+    parser.add_argument('-rf', '--rfapps', choices = ['rfserver', 'rfproxy', 'rfclient'],
+                        help='list of rfapps to be tested. select from the choice')
 
     #accept the mongodb port. default 27017
     parser.add_argument('-m', '--mongoport', default=27017, type = int,
@@ -348,6 +265,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     testsobj = Tests()
-    testsobj.setTestsToRun(args.pytest,args.testcases)
-    testsobj.configureTests(mongo = args.mongoport, containers = args.lxcnames)
+    mydict = {}
+    #mydict = args.testcases
+    #testsobj.setTestsToRun(args.pytest, **mydict) #args.testcases will be a dictionary that is passed.
+    testsobj.setTestsToRun(True, args.testcases) #args.testcases will be a dictionary that is passed.
+    testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps )
     testsobj.runTests()
