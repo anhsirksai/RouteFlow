@@ -152,6 +152,12 @@ class Tests:
         for root, dirnames, filenames in os.walk(path):
            for filename in fnmatch.filter(filenames, 'test_*'):
                matches.append(os.path.join(filename)) #filename will only return the filename for files even in subdirectory.
+        for obj in enumerate(matches):
+            if obj in self.testsToRun.keys():
+                if self.testsToRun[obj] == True:
+                    #create an object to the class and run the tests.
+                
+    
 
     def runTests(self):
         '''
@@ -169,7 +175,7 @@ class Tests:
         self.setTestsOutputModes() #This line is temporary. remove it if it is visible in vandervecken.
         for key,tests in self.testsToRun.items():
             if tests == True:
-               logger =  setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
+               logger =  self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
 
 class RFUnitTests(object):
