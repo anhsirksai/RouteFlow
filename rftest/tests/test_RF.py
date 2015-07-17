@@ -20,9 +20,9 @@ import fnmatch
 
 class Tests:
     CATALOGUE = {
-                'ovs':'OVS',
-                'containers':'Containers',
-                'rfapps':'RFApps',
+                'test_OVS':'ovs',
+                'test_Containers':'containers',
+                'test_RFApps':'rfapps',
     }
     LOGLEVEL = {
                10 : 'DEBUG',
@@ -36,21 +36,22 @@ class Tests:
         self.testsToRun = {'ovs':True, 'containers':False, 'rfapps':True}
         self.testsParams = {'mongo':27017, 'containers':['rfvmA','rfvmB'], 'rfapp':['rfproxy','rfserver']}
 
-        #This can be a single dictionary. txt terminal json and raw.
+        #This can be a single dictionary. txt, terminal json and raw.
         self.outputFormat = {'txt':False, 'terminal':False}
         self.outputModes = {'json':False, 'raw':False}
         self.use_pytest = False
 
 
     #def setTestsToRun(self, *args, **kwargs):
-    def setTestsToRun(self, isPytest,**kwargs):
+    def setTestsToRun(self, *kargs, **kwargs):
         '''
         fill self.testsToRun with proper arguments
         like lxc, ovs, rfserver, rfproxy,.... true or false
 
         define if tests will use pytest or not (self.use_pytest = False)
         '''
-        self.use_pytest = isPytest
+        if 'pytest' in kwargs.keys():
+            self.use_pytest = kwargs['pytest']
 
         #If kwargs is empty leave the testsToRun dictionary with default arguments.
         if kwargs:
@@ -66,7 +67,8 @@ class Tests:
         if kwargs:
             self.testsParams.clear()
             for key,param in kwargs.items():
-                self.testsParams[key] = param
+                if key in self.testsParams.keys():
+                    self.testsParams[key] = param
 
     #def setTestsOutput(self, *args, **kwargs):
     def setTestsOutputFormat(self, **kwargs):
@@ -92,8 +94,9 @@ class Tests:
         if kwargs:
             for key,modes in kwargs.items():
                 self.outputModes[key] = modes
-        del self.outputModes['raw']
-        self.outputModes['raw'] = True
+        
+        #del self.outputModes['raw'] #These two line(this and the one below) are temporary, If seen in Vandervecken branch, please delete.
+        #self.outputModes['raw'] = True
 
     def setup(self,name,output_dir):
         '''
@@ -153,12 +156,13 @@ class Tests:
            for filename in fnmatch.filter(filenames, 'test_*'):
                matches.append(os.path.join(filename)) #filename will only return the filename for files even in subdirectory.
         for obj in enumerate(matches):
-            if obj in self.testsToRun.keys():
+            if obj in Tests.CATALOGUE.keys() and Tests.CATALOGUE[obj] in self.testsToRun.keys():
                 if self.testsToRun[obj] == True:
-                    #create an object to the class and run the tests.
-                
-    
-
+                    #create an object to the class and run the tests. How??     
+                    # from rftest.tests.____?? import *                         
+                    #How to build a dictionary "setUpTests ??                   
+                    pass 
+                    
     def runTests(self):
         '''
         Two approaches here depending on self.use_pytest = True or False:
@@ -178,18 +182,22 @@ class Tests:
                logger =  self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
 
+
 class RFUnitTests(object):
 
     def __init__(self, logger):
         self.logger = logger
         self.tests = {}
 
-    def evaluate(self, capfd):
+    def evaluate(self, capfd): #I think this defnition should be modified to accept "tests" dictionary from derived classes.
         '''
         for each process in self.tests run it using capfd
         This function only execute the commands, get the output/err,
         return them as {command: {'out':output,'err':err} )
         '''
+        logger.info('TestOVS Network ovs-vsctl')                                
+        out,err = subprocess.call(                                              
+        return executiondict                                                    
         #logger.info('TestOVS Network ovs-vsctl')
         #subprocess.call('ovs-vsctl show | grep dp0', shell = True)
         pass
@@ -271,9 +279,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     testsobj = Tests()
-    mydict = {}
+    #mydict = {}
     #mydict = args.testcases
-    #testsobj.setTestsToRun(args.pytest, **mydict) #args.testcases will be a dictionary that is passed.
-    testsobj.setTestsToRun(True, args.testcases) #args.testcases will be a dictionary that is passed.
+    testsobj.setTestsToRun(args) #args.testcases will be a dictionary that is passed.
+    #testsobj.setTestsToRun(True, **mydict) #args.testcases will be a dictionary that is passed.
     testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps )
-    testsobj.runTests()
+    testsobj.runTests() 

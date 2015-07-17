@@ -1,37 +1,41 @@
-from test_RF import RFUnitTests
-#from test_RF import logger
-
-class OVS(RFUnitTests):
-
-    '''
-    TESTS contain association of commands and a dict containing
-    the method of evaluation of the command and the expected output
-    '''
-    TESTS = {
-            'ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},
-            'ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},
-    }
-
-    def __init__(self, logger):
-        super().__init__(logger)
-
-    def addTestsDefault(self):
-        self.tests = TESTS
-
-    def addTest(self, cmd, method, output):
-        '''
-        add in self.tests new tests following the TEST structure
-        '''
-        pass
-
-    def setTestsParams(self, cmd, param):
-        '''
+from test_RF import RFUnitTests                                                                                                       
+#from test_RF import logger                                                     
+                                                                                
+class OVS(RFUnitTests):                                                         
+                                                                                
+    '''                                                                         
+    TESTS contain association of commands and a dict containing                 
+    the method of evaluation of the command and the expected output             
+    '''                                                                         
+    TESTS = {                                                                   
+            'ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},      
+            'ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},      
+    }                                                                           
+                                                                                
+    def __init__(self, logger):                                                 
+        super().__init__(logger)                                                
+                                                                                
+    def addTestsDefault(self):                                                  
+        self.tests = TESTS #Where did this "tests" come from ? simply return tests is enough ??
+        return tests                                                            
+                                                                                
+    def addTest(self, cmd, method, output):                                     
+        '''                                                                     
+        add in self.tests new tests following the TEST structure                
+        '''                                                                     
+        pass                                                                    
+                                                                                
+    def setTestsParams(self, cmd, param):                                       
+        '''                                                                     
         Define for example self.containernames, self.mongoport, self.controllerport
-        for Container, Mongo, Controller classes respectively
-        In this case modify cmd in self.tests
+        for Container, Mongo, Controller classes respectively                   
+        In this case modify cmd in self.tests                                   
         '''
         pass
 
+    def evaluate(self, capfd):                                                  
+        executiondict = super(OVS,self).evaluate(self.tests)
+        
     def run_tests(self):
         '''
         basically runs methods inherited with self.tests attribute
