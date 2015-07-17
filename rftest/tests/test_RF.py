@@ -20,9 +20,9 @@ import fnmatch
 
 class Tests:
     CATALOGUE = {
-                'test_OVS':'ovs',
-                'test_Containers':'containers',
-                'test_RFApps':'rfapps',
+                'test_OVS':'OVS',
+                'test_Containers':'Containers',
+                'test_RFApps':['RFserver','RFproxy','RFclient']
     }
     LOGLEVEL = {
                10 : 'DEBUG',
@@ -40,7 +40,7 @@ class Tests:
         self.outputFormat = {'txt':False, 'terminal':False}
         self.outputModes = {'json':False, 'raw':False}
         self.use_pytest = False
-
+        self.setUpTests = {}
 
     #def setTestsToRun(self, *args, **kwargs):
     def setTestsToRun(self, *kargs, **kwargs):
@@ -158,6 +158,15 @@ class Tests:
         for obj in enumerate(matches):
             if obj in Tests.CATALOGUE.keys() and Tests.CATALOGUE[obj] in self.testsToRun.keys():
                 if self.testsToRun[obj] == True:
+                    if type(Tests.CATALOGUE[obj]) is list:
+                        for classes_ in Tests.CATALOGUE[obj]:
+                            module = __import__(obj)
+                            class_ = getattr(module, classes_)
+                            self.setupTests[obj] = class_()
+                    else:
+                        module = __import__(obj)
+                        class_ = getattr(module, Tests.CATALOGUE[obj])
+                        self.setupTests[obj] = class_()
                     #create an object to the class and run the tests. How??     
                     # from rftest.tests.____?? import *                         
                     #How to build a dictionary "setUpTests ??                   
@@ -187,14 +196,15 @@ class RFUnitTests(object):
 
     def __init__(self, logger):
         self.logger = logger
-        self.tests = {}
+        
 
-    def evaluate(self, capfd): #I think this defnition should be modified to accept "tests" dictionary from derived classes.
+    def evaluate(self, capfd): #I think this defnition should be modified to accept "tests" dictionary from derived classes(from test_ovs or test_mongo .. classes).
         '''
         for each process in self.tests run it using capfd
         This function only execute the commands, get the output/err,
         return them as {command: {'out':output,'err':err} )
         '''
+        self.tests 
         logger.info('TestOVS Network ovs-vsctl')                                
         out,err = subprocess.call(                                              
         return executiondict                                                    
