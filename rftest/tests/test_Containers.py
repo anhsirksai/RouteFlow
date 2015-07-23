@@ -1,15 +1,12 @@
 from test_RF import RFUnitTests
 
-class OVS(RFUnitTests):
+class Containers(RFUnitTests):
 
     '''
     TESTS contain association of commands and a dict containing
     the method of evaluation of the command and the expected output
     '''
-    TESTS = {
-            'ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},
-            'ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},
-    }
+    TESTS = {}
 
     def __init__(self, logger):
         super().__init__(logger)
@@ -30,7 +27,7 @@ class OVS(RFUnitTests):
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
         '''
-        pass
+        return str(cmd) + str(param)
 
 
     def run_tests(self):
@@ -41,10 +38,10 @@ class OVS(RFUnitTests):
         self.analyse
         '''
         self.addTestsDefault()
-        self.addTest("ps aux | grep dp0","find","ovsdb-server")
-        self.addTest("ps aux | grep dp0","find","ovs-vswitchd")
-        self.logger.getlogger("Test_OVS")
-        self.logger.INFO("Test OVS class Begin")
+        cmd = self.setTestsParams("lxc-info -n","rfvmA")
+        self.addTest(cmd,"find","state: RUNNING")
+        self.logger.getlogger("Test_containers")
+        self.logger.INFO("Test containers class Begin")
         self.evaluate()
         self.verify()
         self.analyse()

@@ -1,14 +1,13 @@
 from test_RF import RFUnitTests
 
-class OVS(RFUnitTests):
+class Mongo(RFUnitTests):
 
     '''
     TESTS contain association of commands and a dict containing
     the method of evaluation of the command and the expected output
     '''
     TESTS = {
-            'ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},
-            'ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},
+            'ps aux | grep mongo':{'method':'find', 'output':'mongod'},
     }
 
     def __init__(self, logger):
@@ -30,8 +29,7 @@ class OVS(RFUnitTests):
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
         '''
-        pass
-
+        return str(cmd) + str(param)
 
     def run_tests(self):
         '''
@@ -41,10 +39,10 @@ class OVS(RFUnitTests):
         self.analyse
         '''
         self.addTestsDefault()
-        self.addTest("ps aux | grep dp0","find","ovsdb-server")
-        self.addTest("ps aux | grep dp0","find","ovs-vswitchd")
-        self.logger.getlogger("Test_OVS")
-        self.logger.INFO("Test OVS class Begin")
+        cmd = self.setTestsParams("netstat -plant | grep", 27017)
+        self.addTest(cmd,"find","mongod")
+        self.logger.getlogger("Test_Mongod")
+        self.logger.INFO("Test Mongod class Begin")
         self.evaluate()
         self.verify()
         self.analyse()
