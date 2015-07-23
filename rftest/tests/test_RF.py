@@ -183,10 +183,27 @@ class Tests:
             self.setupTests[test].run_tests()
 
 
+class Dictlist(dict):
+    '''
+    class to accept dictionary of lists.
+    Required to handle the outputDictionary in RFUnitTests.
+    The commands that are to be executed are not unique within testcases.
+    Hence this class is required.
+    '''
+    def __setitem__(self, key, value):
+        try:
+            self[key]
+        except KeyError:
+            super(Dictlist, self).__setitem__(key, [])
+        self[key].append(value)
+
 class RFUnitTests(object):
 
     def __init__(self, logger):
         self.logger = logger
+        self.evaluateDictionary = Dictlist()
+        self.verifyDictionary = Dictlist()
+        #self.dictlist = Dictlist()
 
 
     def evaluate(self, capfd):
@@ -197,12 +214,17 @@ class RFUnitTests(object):
         '''
         self.tests
         #Extract the list which is value of another list. save it as value.
+        # I think it is not required to return the dictionary since the object for each class is instantiated seperately.
+        #Everytime a new object calls the evaluate function, it will be followed by verify and analyse.
+        #Each time a new object calls the evaluate, a the dictionary will be cleared.
+        #This approach is fine as long as we follow the non-threading approach. are we planning to use threads?? not in near future.
+        if self.evaluateDictionary:
+            self.evaluateDictionary.clear()
         for key,value in tests.items():
-            out,err = subprocess.call(key #Extract the values from value above and save it to our executuindict.
-        executiondict[key]
-        #logger.info('TestOVS Network ovs-vsctl')
-        #subprocess.call('ovs-vsctl show | grep dp0', shell = True)
-        pass
+            out,err = subprocess.call(key,shell = True) #Extract the values from value above and save it to our executuindict.
+            self.evaluateDictionary[key] = {'out' : out,
+                                            'err' : err, } # since we are only executing command, err will always be empty.
+
 
     def verify(self, tests_out):
         '''
@@ -216,7 +238,25 @@ class RFUnitTests(object):
         associate dict {command: {'assert':False, 'result':err}}
         returns dict with commands:assertions,results
         No need to write assertion
+
+        Verify if the command is a list or not. define behaviour accordingly.
         '''
+        # how to access the values in each list item which is a key.??
+        #compare the
+        #if type(self.evaluateDictionary[key]) is list:
+        #    for tests_ in self.evaluateDictionary[key]:
+        #        tests_.
+
+        for inputs,valuelist in self.evaluateDictionary.items():
+            #if type(self.evaluateDictionary[inputs]) is list: values is a list by default
+            for commandOutput in valuelist:
+                    for key,values in commandOutput.items(): #key : 'out','errr' values: console out and err.
+                        #write the compare logic and save to verifyDictionary.
+                        self.tests[str(inputs)][] # inputs here is equal to the command of tests dictionary.
+
+            else:
+                for key,values in self.evaluateDictionary[inputs]:
+                    #write the compare logic and save to verifyDictionary.
         pass
 
     def analyse(self, verify_out):
