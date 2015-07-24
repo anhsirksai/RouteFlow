@@ -222,8 +222,8 @@ class RFUnitTests(object):
             self.evaluateDictionary.clear()
         for key,value in tests.items():
             out,err = subprocess.call(key,shell = True) #Extract the values from value above and save it to our executuindict.
-            self.evaluateDictionary[key] = {'out' : out,
-                                            'err' : err, } # since we are only executing command, err will always be empty.
+            self.evaluateDictionary[key] = {'out' : str(out),
+                                            'err' : str(err), } # since we are only executing command, err will always be empty.
 
 
     def verify(self):
@@ -241,24 +241,26 @@ class RFUnitTests(object):
 
         Verify if the command is a list or not. define behaviour accordingly.
         '''
-        # how to access the values in each list item which is a key.??
-        #compare the
-        #if type(self.evaluateDictionary[key]) is list:
-        #    for tests_ in self.evaluateDictionary[key]:
-        #        tests_.
+        #sample evaluateDictionary.
+        #{'ovs-vsctl show | grep dp0': [{'err': 'krishna sai klfhahsd dp01',
+        #   'out': 'sai krishnaalskdfkaskj dp0'}],
+        # 'test': [1]}
+
+        #In [48]: evaluateDictionary['ovs-vsctl show | grep dp0'][0].keys()[0]
+        #Out[48]: 'err'
+
 
         for inputs,valuelist in self.evaluateDictionary.items():
-            #if type(self.evaluateDictionary[inputs]) is list: values is a list by default
-            for commandOutput in valuelist:
-                    for key,values in commandOutput.items(): #key : 'out','errr' values: console out and err.
-                        pass
-                        #write the compare logic and save to verifyDictionary.
-                        #self.tests[str(inputs)][] # inputs here is equal to the command of tests dictionary.
+            for vlist in valuelist:
+                if type(vlist) is dict:
+                    for outerr,consoleMessage in vlist.items():
+                         #This is for out.find("dp0") Then it is found
+                         if self.tests[inputs]['method'] == 'find' && self.evaluateDictionary[inputs][0].keys()[0] == 'out': #This condition is to be handled properly. This will fail.
+                             if str(self.evaluateDictionary[inputs][outerr]).find(self.tests[inputs]['output']) != -1:
+                                 verifyDictionary[inputs] = {'assert':True, 'result':str(self.evaluateDictionary[inputs][vlist]['out'])}
+                             else :
+                                 verifyDictionary[inputs] = {'assert':False, 'result':str(self.evaluateDictionary[inputs][vlist]['err'])}
 
-            else:
-                for key,values in self.evaluateDictionary[inputs]:
-                    pass
-                    #write the compare logic and save to verifyDictionary.
 
     def analyse(self):
         '''
@@ -272,7 +274,7 @@ class RFUnitTests(object):
         pass
 
 
-    def run_tests():
+    def run_tests(self):
         '''
         just pass, the classes inheriting RFUnitTests will
         overwrite this function
