@@ -155,11 +155,11 @@ class Tests:
                         #for classes_ in Tests.CATALOGUE[obj]:
                             module = __import__(obj)
                             class_ = getattr(module, classes_)
-                            self.setupTests[obj] = class_()
+                            self.setUpTests[obj] = class_(self.logger)
                     else:
                         module = __import__(obj)
                         class_ = getattr(module, Tests.CATALOGUE[obj])
-                        self.setupTests[obj] = class_(self.logger)
+                        self.setUpTests[obj] = class_(self.logger)
 
     def runTests(self):
         '''
@@ -179,8 +179,8 @@ class Tests:
         #    if tests == True:
         #       logger =  self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
-        for test in self.setupTests.keys():
-            self.setupTests[test].run_tests()
+        for test in self.setUpTests.keys():
+            self.setUpTests[test].run_tests()
 
 
 class Dictlist(dict):
@@ -226,7 +226,7 @@ class RFUnitTests(object):
                                             'err' : err, } # since we are only executing command, err will always be empty.
 
 
-    def verify(self, tests_out):
+    def verify(self):
         '''
         receives dict {command: {'out':output,'err':err} )
         run comparisons of responses (output/err) and
@@ -251,15 +251,16 @@ class RFUnitTests(object):
             #if type(self.evaluateDictionary[inputs]) is list: values is a list by default
             for commandOutput in valuelist:
                     for key,values in commandOutput.items(): #key : 'out','errr' values: console out and err.
+                        pass
                         #write the compare logic and save to verifyDictionary.
-                        self.tests[str(inputs)][] # inputs here is equal to the command of tests dictionary.
+                        #self.tests[str(inputs)][] # inputs here is equal to the command of tests dictionary.
 
             else:
                 for key,values in self.evaluateDictionary[inputs]:
+                    pass
                     #write the compare logic and save to verifyDictionary.
-        pass
 
-    def analyse(self, verify_out):
+    def analyse(self):
         '''
         receives dict of verify_processes
         check assertion values and write results to logger
@@ -327,5 +328,5 @@ if __name__ == '__main__':
     testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
     testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
     testsobj.findTests()
-    testsobj.setup()
+    testsobj.setup(os.path.dirname(os.path.realpath(__file__)))
     testsobj.runTests()
