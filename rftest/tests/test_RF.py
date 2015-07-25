@@ -249,13 +249,13 @@ class RFUnitTests(object):
         #In [48]: evaluateDictionary['ovs-vsctl show | grep dp0'][0].keys()[0]
         #Out[48]: 'err'
 
-
+        #key of self.evaluateDictionary is always equal to key of self.tests dictionary. This is how data structure is built.Hence tests[inputs] will work.
         for inputs,valuelist in self.evaluateDictionary.items():
             for vlist in valuelist:
                 if type(vlist) is dict:
                     for outerr,consoleMessage in vlist.items():
                          #This is for out.find("dp0") Then it is found
-                         if self.tests[inputs]['method'] == 'find' && self.evaluateDictionary[inputs][0].keys()[0] == 'out': #This condition is to be handled properly. This will fail.
+                         if self.tests[inputs]['method'] == 'find' && self.evaluateDictionary[inputs][0].keys()[0] == 'out': #The second 'if' condition is to be handled properly. This will fail.
                              if str(self.evaluateDictionary[inputs][outerr]).find(self.tests[inputs]['output']) != -1:
                                  verifyDictionary[inputs] = {'assert':True, 'result':str(self.evaluateDictionary[inputs][vlist]['out'])}
                              else :
@@ -271,8 +271,11 @@ class RFUnitTests(object):
         self.logger.info("ERROR\n %s", err)
         No need to write assertion
         '''
-        pass
-
+        for keys,values in verifyDictionary.items():
+            if values['assert'] == True:
+                self.logger.info("OUTPUT\n %s", values['result'])
+            else if values['assert'] == False:
+                self.logger.info("ERROR\n %s", values['result'])
 
     def run_tests(self):
         '''
