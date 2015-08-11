@@ -3,12 +3,13 @@ import time
 import argparse
 #import unittest
 import os
-import pytest
+#import pytest
 import logging
 import subprocess
 import json
 import fnmatch
 
+from subprocess import Popen, PIPE
 #from utils import DumpToFile
 
 #logging.basicConfig(
@@ -58,7 +59,6 @@ class Tests:
             for key,tests  in kwargs.items():
                 self.testsToRun[key] = tests
 
-
     def configureTests(self, **kwargs):
         '''
         fill self.testsParams with arguments
@@ -69,7 +69,6 @@ class Tests:
                 if key in self.testsParams.keys():
                     self.testsParams[key] = param
 
-    #def setTestsOutput(self, *args, **kwargs):
     def setTestsOutputFormat(self, **kwargs):
         '''
         check if tests results must be saved
@@ -183,37 +182,34 @@ class Tests:
             self.setUpTests[test].run_tests()
 
 
-class Dictlist(dict):
-    '''
-    class to accept dictionary of lists.
-    Required to handle the outputDictionary in RFUnitTests.
-    The commands that are to be executed are not unique within testcases.
-    Hence this class is required.
-    '''
-    def __setitem__(self, key, value):
-        try:
-            self[key]
-        except KeyError:
-            super(Dictlist, self).__setitem__(key, [])
-        self[key].append(value)
+#class Dictlist(dict):
+#    '''
+#    class to accept dictionary of lists.
+#    Required to handle the outputDictionary in RFUnitTests.
+#    The commands that are to be executed are not unique within testcases.
+#    Hence this class is required.
+#    '''
+#    def __setitem__(self, key, value):
+#        try:
+#            self[key]
+#        except KeyError:
+#            super(Dictlist, self).__setitem__(key, [])
+#        self[key].append(value)
 
 class RFUnitTests(object):
 
     def __init__(self, logger):
         self.logger = logger
-        self.evaluateDictionary = Dictlist()
-        self.verifyDictionary = Dictlist()
-        #self.dictlist = Dictlist()
+        self.evaluateDictionary = {}
+        self.verifyDictionary = {}
 
-
-    def evaluate(self, capfd):
+    def evaluate(self):
         '''
         for each process in self.tests run it using capfd
         This function only execute the commands, get the output/err,
         return them as {command: {'out':output,'err':err} )
         '''
         self.tests
-        #Extract the list which is value of another list. save it as value.
         # I think it is not required to return the dictionary since the object for each class is instantiated seperately.
         #Everytime a new object calls the evaluate function, it will be followed by verify and analyse.
         #Each time a new object calls the evaluate, a the dictionary will be cleared.
@@ -221,10 +217,11 @@ class RFUnitTests(object):
         if self.evaluateDictionary:
             self.evaluateDictionary.clear()
         for key,value in tests.items():
-            out,err = subprocess.call(key,shell = True) #Extract the values from value above and save it to our executuindict.
+            #out,err = subprocess.call(key,shell = True) #Extract the values from value above and save it to our executuindict.
+            sp = subprocess.popen(key,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True) #Extract the values from value above and save it to our executuindict.
+            out,err = sp.communicate()
             self.evaluateDictionary[key] = {'out' : str(out),
-                                            'err' : str(err), } # since we are only executing command, err will always be empty.
-
+                                            'err' : str(err), }
 
     def verify(self):
         '''
@@ -240,27 +237,21 @@ class RFUnitTests(object):
         No need to write assertion
 
         Verify if the command is a list or not. define behaviour accordingly.
+        
+        sample evaluateDictionary.
+        {'ovs-vsctl show | grep dp0': {'err': 'krishna sai klfhahsd dp01',
+           'out': 'sai krishnaalskdfkaskj dp0'},}
         '''
-        #sample evaluateDictionary.
-        #{'ovs-vsctl show | grep dp0': [{'err': 'krishna sai klfhahsd dp01',
-        #   'out': 'sai krishnaalskdfkaskj dp0'}],
-        # 'test': [1]}
-
-        #In [48]: evaluateDictionary['ovs-vsctl show | grep dp0'][0].keys()[0]
-        #Out[48]: 'err'
-
         #key of self.evaluateDictionary is always equal to key of self.tests dictionary. This is how data structure is built.Hence tests[inputs] will work.
-        for inputs,valuelist in self.evaluateDictionary.items():
-            for vlist in valuelist:
-                if type(vlist) is dict:
-                    for outerr,consoleMessage in vlist.items():
-                         #This is for out.find("dp0") Then it is found
-                         if self.tests[inputs]['method'] == 'find' && self.evaluateDictionary[inputs][0].keys()[0] == 'out': #The second 'if' condition is to be handled properly. This will fail.
-                             if str(self.evaluateDictionary[inputs][outerr]).find(self.tests[inputs]['output']) != -1:
-                                 verifyDictionary[inputs] = {'assert':True, 'result':str(self.evaluateDictionary[inputs][vlist]['out'])}
-                             else :
-                                 verifyDictionary[inputs] = {'assert':False, 'result':str(self.evaluateDictionary[inputs][vlist]['err'])}
-
+        for cmdInput,outErrDict in self.evaluateDictionary.items():
+            if outErrDict.values()[0]['out']:
+                if self.tests[inputs]['method'] == 'find': #The second 'if' condition is to be handled properly. This will fail.
+                    if str(outErrDict.values()[0]['out']).find(self.tests[inputs]['output']) != -1:
+                        verifyDictionary[cmdInput] = {'assert':True, 'result':str(outErrDict.values()[0]['out'])}
+                    else :
+                        verifyDictionary[cmdInput] = {'assert':False, 'result':str(outErrDict.values()[0]['out'])}
+            if outErrDict.values()[0]['err']:
+                verifyDictionary[cmdInput] = {'assert':False, 'result':str(outErrDict.values()[0]['err'])}
 
     def analyse(self):
         '''
@@ -274,7 +265,7 @@ class RFUnitTests(object):
         for keys,values in verifyDictionary.items():
             if values['assert'] == True:
                 self.logger.info("OUTPUT\n %s", values['result'])
-            else if values['assert'] == False:
+            elif values['assert'] == False:
                 self.logger.info("ERROR\n %s", values['result'])
 
     def run_tests(self):
@@ -287,9 +278,6 @@ class RFUnitTests(object):
 if __name__ == '__main__':
     description = 'RFTest suite, to run the tests and determine the state of system'
     epilog = 'Report bugs to: https://github.com/routeflow/RouteFlow/issues'
-
-    #config = os.path.dirname(os.path.realpath(__file__)) + "/config.csv"
-    #islconf = os.path.dirname(os.path.realpath(__file__)) + "/islconf.csv"
 
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
 
@@ -327,8 +315,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     testsobj = Tests()
-    #mydict = {}
-    #mydict = args.testcases
     testsobj.setTestsToRun(args) #args.testcases will be a dictionary that is passed.
     testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
     testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
