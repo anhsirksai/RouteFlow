@@ -11,8 +11,11 @@ class Connectivity(RFUnitTests():
         
     def getContainerRoutes(self, name):
         cmd = "lxc-ps -n " + name + "route -n"
-        
-        return subprocess.call(cmd)
+        sp =  subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+        out,err = sp.communicate()
+        return out,err
+        #return sp.stdout This is a file pointer. No use in using this method
+        #return subprocess.call(cmd)
     
     def parseContainerRoutes(self, name):
         '''
@@ -30,7 +33,9 @@ class Connectivity(RFUnitTests():
         172.31.2.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0
  
         '''
-        pass
+        out = getContainerRoutes(name)
+        for line in out:
+            print line #handle storing of only routes in the self.containerRoutes dictionary.
 
     
     def getContainerInterfaces(self, name):

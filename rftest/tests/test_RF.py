@@ -241,7 +241,7 @@ class RFUnitTests(object):
             self.evaluateDictionary.clear()
         for key,value in tests.items():
             #out,err = subprocess.call(key,shell = True) #Extract the values from value above and save it to our executuindict.
-            sp = subprocess.popen(key,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True) #Extract the values from value above and save it to our executuindict.
+            sp = subprocess.Popen(key,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True) #Extract the values from value above and save it to our executuindict.
             out,err = sp.communicate()
             self.evaluateDictionary[key] = {'out' : str(out),
                                             'err' : str(err), }
