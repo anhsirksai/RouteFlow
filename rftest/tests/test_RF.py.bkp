@@ -3,13 +3,12 @@ import time
 import argparse
 #import unittest
 import os
-#import pytest
+import pytest
 import logging
 import subprocess
 import json
 import fnmatch
 
-from subprocess import Popen, PIPE
 #from utils import DumpToFile
 
 #logging.basicConfig(
@@ -21,10 +20,9 @@ from subprocess import Popen, PIPE
 
 class Tests:
     CATALOGUE = {
-                'test_Ovs.py':'OVS',
-                'test_Mongo':'Mongo',
-                'test_Containers':'Containers',
-                'test_RFApps':['RFserver','RFproxy','RFclient']
+                'ovs':'OVS',
+                'containers':'Containers',
+                'rfapps':'RFApps',
     }
     LOGLEVEL = {
                10 : 'DEBUG',
@@ -35,26 +33,24 @@ class Tests:
     }
 
     def __init__(self):
-        self.testsToRun = {'ovs':True, 'containers':False, 'rfapps':False}
+        self.testsToRun = {'ovs':True, 'containers':False, 'rfapps':True}
         self.testsParams = {'mongo':27017, 'containers':['rfvmA','rfvmB'], 'rfapp':['rfproxy','rfserver']}
+
+        #This can be a single dictionary. txt terminal json and raw.
         self.outputFormat = {'txt':False, 'terminal':False}
         self.outputModes = {'json':False, 'raw':False}
         self.use_pytest = False
-        self.setUpTests = {}
-        self.logger = None
 
-    #def setTestsToRun(self, *kargs, **kwargs):
-    def setTestsToRun(self, **kwargs):
+
+    #def setTestsToRun(self, *args, **kwargs):
+    def setTestsToRun(self, isPytest,**kwargs):
         '''
         fill self.testsToRun with proper arguments
         like lxc, ovs, rfserver, rfproxy,.... true or false
 
         define if tests will use pytest or not (self.use_pytest = False)
         '''
-        print "saikrishna setTestsToRun"
-        print "%s"%( kwargs)
-        #if 'pytest' in kwargs.keys():
-        #    self.use_pytest = kwargs['pytest']
+        self.use_pytest = isPytest
 
         #If kwargs is empty leave the testsToRun dictionary with default arguments.
         if kwargs:
@@ -62,17 +58,17 @@ class Tests:
             for key,tests  in kwargs.items():
                 self.testsToRun[key] = tests
 
+
     def configureTests(self, **kwargs):
         '''
         fill self.testsParams with arguments
         '''
-        print "saikrishna configureTests"
         if kwargs:
             self.testsParams.clear()
             for key,param in kwargs.items():
-                if key in self.testsParams.keys():
-                    self.testsParams[key] = param
+                self.testsParams[key] = param
 
+    #def setTestsOutput(self, *args, **kwargs):
     def setTestsOutputFormat(self, **kwargs):
         '''
         check if tests results must be saved
@@ -80,7 +76,6 @@ class Tests:
         in json or raw formats
         (first let`s save in raw format)
         '''
-        print "saikrishna setTestsOutputFormat"
         self.outputFormat.clear()
         if kwargs:
             for key,formats in kwargs.items():
@@ -89,16 +84,18 @@ class Tests:
     def setTestsOutputModes(self, **kwargs):
         '''
         check if tests results must be saved
+        in txt file or sent to terminal
         in json or raw formats
         (first let`s save in raw format)
         '''
-        print "saikrishna setTestsOutputModes"
         self.outputModes.clear()
         if kwargs:
             for key,modes in kwargs.items():
                 self.outputModes[key] = modes
+        del self.outputModes['raw']
+        self.outputModes['raw'] = True
 
-    def setup(self,output_dir):
+    def setup(self,name,output_dir):
         '''
         takes self.testsToRun, self.outputFormat, self.outputModes
         and prepare environment to runtests
@@ -118,26 +115,28 @@ class Tests:
             following self.testParams
         this dict will be used to be used in runTests function
 
+        :name: used to print the class name in the get logger.
         :output_dir: directory to store logs
         '''
 
-        print "saikrishna setup"
-        self.logger = logging.getLogger()
-        self.logger.setLevel(logging.DEBUG)
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.DEBUG)
 
         #INFO handler
         handler = logging.FileHandler(os.path.join(output_dir, "Output.log"),"w", encoding=None, delay="true")
         handler.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s %(name)-15s %(levelname)-8s %(message)s")
         handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+        logger.addHandler(handler)
 
         #ERROR handler
         handler = logging.FileHandler(os.path.join(output_dir, "Error.log"),"w", encoding=None, delay="true")
         handler.setLevel(logging.ERROR)
         formatter = logging.Formatter("%(asctime)s %(name)-15s %(levelname)-8s %(message)s")
         handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+        logger.addHandler(handler)
+
+        return logger
 
     def findTests(self):
         '''
@@ -148,38 +147,16 @@ class Tests:
                 following self.testParams
             this dict will be used to be used in runTests function
         '''
-        #TODO: remove the .py extension. else tests will not be found., Instead change the keys in CATELOGUE with .py extension.
-        #print  matches #['test_Ovs.py', 'test_Containers.py', 'test_RFApps.py', 'test_RF.py', 'test_Connectivity.py', 'test_Mongo.py', 'test_RF.pyc']
-        #print "creating test class object matches", obj #prints (0, 'test_Ovs.py')
-        #print self.testsToRun.keys() #prints ['ovs']
-        #print Tests.CATALOGUE.keys() #prints ['test_Containers', 'test_Mongo', 'test_RFApps', 'test_Ovs.py']
-        #if obj in Tests.CATALOGUE:
-        #    print "success1"
-        #if Tests.CATALOGUE[obj] in self.testsToRun.keys():
-        #    print "success2"
-        print "saikrishna findTests"
         path = os.getcwd()# This should be pointing to /RouteFlow/rftest/tests
-        print "saikrishna findTests %s"% (path)
         matches = []
         for root, dirnames, filenames in os.walk(path):
            for filename in fnmatch.filter(filenames, 'test_*'):
                matches.append(os.path.join(filename)) #filename will only return the filename for files even in subdirectory.
         for obj in enumerate(matches):
-            #print "sai krishna matches %s"% (Tests.CATALOGUE.keys()[1])
-            if obj in Tests.CATALOGUE.keys() and Tests.CATALOGUE[obj] in self.testsToRun.keys():
-            #if obj in Tests.CATALOGUE.keys() and self.testsToRun.keys() in Tests.CATALOGUE.keys()[1]:
+            if obj in self.testsToRun.keys():
                 if self.testsToRun[obj] == True:
-                    if type(Tests.CATALOGUE[obj]) is list:
-                        print "creating test class object if"
-                        for classes_ in Tests.CATALOGUE[obj]: #For each file, instantiate an object for the classes in it.
-                        #for classes_ in Tests.CATALOGUE[obj]:
-                            module = __import__(obj)
-                            class_ = getattr(module, classes_)
-                            self.setUpTests[obj] = class_(self.logger)
-                    else:
-                        module = __import__(obj)
-                        class_ = getattr(module, Tests.CATALOGUE[obj])
-                        self.setUpTests[obj] = class_(self.logger)
+                    #create an object to the class and run the tests.
+                    pass
 
     def runTests(self):
         '''
@@ -194,59 +171,29 @@ class Tests:
         '''
         # call setup with the name argument. This name will be used by logger.
         # The name is an itervalue from self.testsToRun dictionary. Pass each key as an argument, if the corresponding value is true.
-        #self.setTestsOutputModes() #This line is temporary. remove it if it is visible in vandervecken.
-        #for key,tests in self.testsToRun.items():
-        #    if tests == True:
-        #       logger =  self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
+        self.setTestsOutputModes() #This line is temporary. remove it if it is visible in vandervecken.
+        for key,tests in self.testsToRun.items():
+            if tests == True:
+               logger = self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
-        print "saikrishna runTests"
-        for test in self.setUpTests.keys():
-            self.setUpTests[test].run_tests()
-
-
-#class Dictlist(dict):
-#    '''
-#    class to accept dictionary of lists.
-#    Required to handle the outputDictionary in RFUnitTests.
-#    The commands that are to be executed are not unique within testcases.
-#    Hence this class is required.
-#    '''
-#    def __setitem__(self, key, value):
-#        try:
-#            self[key]
-#        except KeyError:
-#            super(Dictlist, self).__setitem__(key, [])
-#        self[key].append(value)
 
 class RFUnitTests(object):
 
     def __init__(self, logger):
         self.logger = logger
-        self.evaluateDictionary = {}
-        self.verifyDictionary = {}
+        self.tests = {}
 
-    def evaluate(self):
+    def evaluate(self, capfd):
         '''
         for each process in self.tests run it using capfd
         This function only execute the commands, get the output/err,
         return them as {command: {'out':output,'err':err} )
         '''
-        print "saikrishna RFUnitTests evaluate"
-        self.tests
-        # I think it is not required to return the dictionary since the object for each class is instantiated seperately.
-        #Everytime a new object calls the evaluate function, it will be followed by verify and analyse.
-        #Each time a new object calls the evaluate, a the dictionary will be cleared.
-        #This approach is fine as long as we follow the non-threading approach. are we planning to use threads?? not in near future.
-        if self.evaluateDictionary:
-            self.evaluateDictionary.clear()
-        for key,value in self.tests.items():
-            #out,err = subprocess.call(key,shell = True) #Extract the values from value above and save it to our executuindict.
-            sp = subprocess.Popen(key,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True) #Extract the values from value above and save it to our executuindict.
-            out,err = sp.communicate()
-            self.evaluateDictionary[key] = {'out' : str(out),
-                                            'err' : str(err), }
+        #logger.info('TestOVS Network ovs-vsctl')
+        #subprocess.call('ovs-vsctl show | grep dp0', shell = True)
+        pass
 
-    def verify(self):
+    def verify(self, tests_out):
         '''
         receives dict {command: {'out':output,'err':err} )
         run comparisons of responses (output/err) and
@@ -258,27 +205,10 @@ class RFUnitTests(object):
         associate dict {command: {'assert':False, 'result':err}}
         returns dict with commands:assertions,results
         No need to write assertion
-
-        Verify if the command is a list or not. define behaviour accordingly.
-
-        sample evaluateDictionary.
-        {'ovs-vsctl show | grep dp0': {'err': 'krishna sai klfhahsd dp01',
-           'out': 'sai krishnaalskdfkaskj dp0'},}
         '''
-        print "saikrishna RFUnitTests verify"
-        #key of self.evaluateDictionary is always equal to key of self.tests dictionary. This is how data structure is built.Hence tests[inputs] will work.
-        for cmdInput,outErrDict in self.evaluateDictionary.items():
-            if outErrDict.values()[0]['out']:
-                if self.tests[inputs]['method'] == 'find':
-                    if str(outErrDict.values()[0]['out']).find(self.tests[inputs]['output']) != -1:
-                        verifyDictionary[cmdInput] = {'assert':True, 'result':str(outErrDict.values()[0]['out'])}
-                    else :
-                        verifyDictionary[cmdInput] = {'assert':False, 'result':str(outErrDict.values()[0]['out'])}
-                #if self.tests[inputs]['method'] == 'findfp': #This is a part of the function passed as argument from test_Connectivity file.
-            if outErrDict.values()[0]['err']:
-                verifyDictionary[cmdInput] = {'assert':False, 'result':str(outErrDict.values()[0]['err'])}
+        pass
 
-    def analyse(self):
+    def analyse(self, verify_out):
         '''
         receives dict of verify_processes
         check assertion values and write results to logger
@@ -287,23 +217,22 @@ class RFUnitTests(object):
         self.logger.info("ERROR\n %s", err)
         No need to write assertion
         '''
-        print "saikrishna RFUnitTests analyse"
-        for keys,values in verifyDictionary.items():
-            if values['assert'] == True:
-                self.logger.info("OUTPUT\n %s", values['result'])
-            elif values['assert'] == False:
-                self.logger.info("ERROR\n %s", values['result'])
+        pass
 
-    def run_tests(self):
+
+    def run_tests():
         '''
         just pass, the classes inheriting RFUnitTests will
         overwrite this function
         '''
-        #pass
+        pass
 
 if __name__ == '__main__':
     description = 'RFTest suite, to run the tests and determine the state of system'
     epilog = 'Report bugs to: https://github.com/routeflow/RouteFlow/issues'
+
+    #config = os.path.dirname(os.path.realpath(__file__)) + "/config.csv"
+    #islconf = os.path.dirname(os.path.realpath(__file__)) + "/islconf.csv"
 
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
 
@@ -341,18 +270,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     testsobj = Tests()
-    #testsobj.setTestsToRun(args) #args.testcases will be a dictionary that is passed.
-    #testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
-    #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
-    kwargs = {'ovs':True}
-    args = ("true",1)
-    #testsobj.setTestsToRun(*args,**kwargs) #args.testcases will be a dictionary that is passed.
-    testsobj.setTestsToRun(**kwargs) #args.testcases will be a dictionary that is passed.
-    #testsobj.setTestsToRun() #args.testcases will be a dictionary that is passed.
-    #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
-    testsobj.setTestsOutputFormat()
-    testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
-
-    testsobj.setup(os.path.dirname(os.path.realpath(__file__)))
-    testsobj.findTests()
+    mydict = {}
+    #mydict = args.testcases
+    #testsobj.setTestsToRun(args.pytest, **mydict) #args.testcases will be a dictionary that is passed.
+    testsobj.setTestsToRun(True, args.testcases) #args.testcases will be a dictionary that is passed.
+    testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps )
     testsobj.runTests()

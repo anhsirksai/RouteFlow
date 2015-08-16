@@ -41,7 +41,7 @@ class RFApps(RFUnitTests):
 class RFserver(RFApps):
 
     def __init__(self, logger):
-        super().__init__(logger)
+        super(RFserver, self).__init__(logger)
 
     def run_tests(self):
         '''
@@ -61,7 +61,8 @@ class RFserver(RFApps):
 class RFproxy(RFApps):
 
     def __init__(self, logger):
-        super().__init__(logger)
+        super(RFproxy, self).__init__(logger, port=6653)
+        self.port = port
 
     #ryu-manager --use-stderr --ofp-tcp-listen-port=$CONTROLLER_PORT ryu-rfproxy/rfproxy.py"
     def setTestsParams(self, cmd, param):
@@ -89,17 +90,11 @@ class RFproxy(RFApps):
         self.analyse
         '''
         self.addTestsDefault()
-        output = setTestsOutputs('ryu-manager --use-stderr --ofp-tcp-listen-port=',' ryu-rfproxy/rfproxy.py', 6633)
-        self.addTest("ps aux | grep rfproxy","find",output)
-        output = setTestsOutputs('ryu-manager --use-stderr --ofp-tcp-listen-port=',' ryu-rfproxy/rfproxy.py', 6653)
+        output = self.setTestsOutputs('ryu-manager --use-stderr --ofp-tcp-listen-port=',' ryu-rfproxy/rfproxy.py', self.port)
         self.addTest("ps aux | grep rfproxy","find",output)
 
-        output =  setTestsOutputs('127.0.0.1:', '', 6633)
-        cmd = self.setTestsParams("netstat -plant | grep", 6633)
-        self.addTest(cmd,"find",output)
-
-        output =  setTestsOutputs('127.0.0.1:', '', 6653)
-        cmd = self.setTestsParams("netstat -plant | grep", 6653)
+        output =  self.setTestsOutputs('127.0.0.1:', '', self.port)
+        cmd = self.setTestsParams("netstat -plant | grep", self.port)
         self.addTest(cmd,"find",output)
 
         self.logger.getlogger("Test_rfproxy")
