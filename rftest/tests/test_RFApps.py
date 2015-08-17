@@ -9,7 +9,7 @@ class RFApps(RFUnitTests):
     TESTS = {}
 
     def __init__(self, logger):
-        super().__init__(logger)
+        super(RFApps, self).__init__(logger)
 
     def addTestsDefault(self):
         self.tests = self.TESTS #tests is initialised in RFUnitTests class and should be filled in here.
