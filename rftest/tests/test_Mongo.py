@@ -11,7 +11,7 @@ class Mongo(RFUnitTests):
     }
 
     def __init__(self, logger):
-        super().__init__(logger)
+        super(Mongo, self).__init__(logger)
 
     def addTestsDefault(self):
         self.tests = self.TESTS #tests is initialised in RFUnitTests class and should be filled in here.
@@ -28,8 +28,13 @@ class Mongo(RFUnitTests):
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
+        netstat -plant | grep $mongoport
         '''
-        return str(cmd) + str(param)
+        print cmd
+        print param
+        print "fuck you mongo"
+        #self.TESTS[str(cmd)] =
+        return str(cmd) + ' ' + str(param)
 
     def run_tests(self):
         '''
@@ -41,8 +46,8 @@ class Mongo(RFUnitTests):
         self.addTestsDefault()
         cmd = self.setTestsParams("netstat -plant | grep", 27017)
         self.addTest(cmd,"find","mongod")
-        self.logger.getlogger("Test_Mongod")
-        self.logger.INFO("Test Mongod class Begin")
+        #self.logger.getlogger("Test_Mongod")
+        self.logger.info("Test Mongod class Begin")
         self.evaluate()
         self.verify()
         self.analyse()

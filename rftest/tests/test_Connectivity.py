@@ -1,16 +1,22 @@
+from test_RF import RFUnitTests
+import subprocess
 
-class Connectivity(RFUnitTests():
+#class Connectivity(RFUnitTests()):
+class Connectivity():
 
     TESTS = {}
 
-    def __init__(self, containerNames):
+    #def __init__(self, containerNames, logger):
+    def __init__(self,containerNames):
+        #super(Conncetivity, self).__init__(logger)
         self.containerRoutes = {}
         self.containerInterfaces = {}
         self.containerNames = containerNames #string to be defined by user (e.g., in rftest2 is rfvmA, B, ...
         self.tests = {}
 
     def getContainerRoutes(self, name):
-        cmd = "lxc-ps -n " + name + "route -n"
+        #cmd = "lxc-attach -n " + name + " -- /home route -n"
+        cmd = "route -n"
         sp =  subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
         out,err = sp.communicate()
         return out,err
@@ -74,8 +80,9 @@ class Connectivity(RFUnitTests():
         '''
         add in self.tests new tests following the TEST structure
         '''
-        self.tests[str(cmd)] = {'method':str(method),
-                                'output':str(output), kwargs}
+        #self.tests[str(cmd)] = {'method':str(method),
+        #                       'output':str(output), kwargs}
+        pass
 
 
     def addTestsDefault(self):
@@ -129,8 +136,8 @@ class Connectivity(RFUnitTests():
         self.analyse
         '''
         self.addTestsDefault()
-        self.logger.getlogger("Test_connectivity")
-        self.logger.INFO("Test connectivity class Begin")
+        #self.logger.getlogger("Test_connectivity")
+        self.logger.info("Test connectivity class Begin")
         self.evaluate()
         self.verify()
         self.analyse()

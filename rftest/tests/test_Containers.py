@@ -9,7 +9,7 @@ class Containers(RFUnitTests):
     TESTS = {}
 
     def __init__(self, logger):
-        super().__init__(logger)
+        super(Containers, self).__init__(logger)
 
     def addTestsDefault(self):
         self.tests = self.TESTS #tests is initialised in RFUnitTests class and should be filled in here.
@@ -40,8 +40,8 @@ class Containers(RFUnitTests):
         self.addTestsDefault()
         cmd = self.setTestsParams("lxc-info -n","rfvmA")
         self.addTest(cmd,"find","state: RUNNING")
-        self.logger.getlogger("Test_containers")
-        self.logger.INFO("Test containers class Begin")
+        #self.logger.getlogger("Test_containers")
+        self.logger.info("Test containers class Begin")
         self.evaluate()
         self.verify()
         self.analyse()
