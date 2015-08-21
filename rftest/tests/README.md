@@ -2,8 +2,8 @@ rftest/tests
 ===========
 
 RouteFlow's Unified testing framework supports two functionalities:
-1. To run the test and get to know the health of routeflow components.
-2. Extend the testcases with ease to tests the new features.
+* To run the test and get to know the health of routeflow components.
+* Extend the testcases with ease to tests the new features.
 
 Dependencies
 -----------
@@ -18,20 +18,17 @@ Building
 The testing framework requires RouteFlow and rftest to run. The usual way to install RouteFlow and
 all of its dependencies is as follows:
 
-   +  Requirements system Ubuntu 12.04 updated and git installed. 
-```apt-get update & apt-get upgrade & apt-get install git```
+* Requirements system Ubuntu 12.04 updated and git installed. 
+    + ```apt-get update & apt-get upgrade & apt-get install git```
 
-   + Clone RouteFlow
+* Clone RouteFlow
+    + ```git clone https://github.com/raphaelvrosa/RouteFlow```
 
-```git clone https://github.com/raphaelvrosa/RouteFlow```
+* Build all the required components of RouteFlow
 
-   + Build all the required components of RouteFlow
-
-```cd RouteFlow```
-
-```git checkout vandervecken```
-
-```./build.sh -c -z -n -i ryu```
+    + ``` cd RouteFlow ```
+    + ``` git checkout vandervecken ```
+    + ``` ./build.sh -c -z -n -i ryu ```
 
 Running
 -------
@@ -40,41 +37,37 @@ RouteFlow usually supplies a script to run all of the components in the
 correct order. If you want to run rftests, start rftest1 or rftest2 first followed by 
 running test cases. Below are the commands for the same.
 
-    + Prior to running the tests, OpenVswitch service should be running. Run the following 
+* Prior to running the tests, OpenVswitch service should be running. Run the following 
 script to bring up the service:
-``` cd RouteFlow/```  
-```./ovs-init.sh```
 
-    + Run the test, either rftest1 or rftest2:
+    + ``` cd RouteFlow/```  
+    + ```./ovs-init.sh```
 
-```cd rftest```
+* Run the test, either rftest1 or rftest2:
 
-```sudo ./rftest1 -z --ryu```
- 
+    + ```cd rftest```
+    + ```sudo ./rftest1 -z --ryu```
 (or)
+    + ```sudo ./rftest2 ```
+    + ``` sudo mn --custom topo-4sw-4host.py --topo rftest2 --controller=remote,ip=127.0.0.1,port=6633 --switch=ovsk,protocols=OpenFlow13 --pre ipconf ```
 
-```sudo ./rftest2
-sudo mn --custom topo-4sw-4host.py --topo rftest2 --controller=remote,ip=127.0.0.1,port=6633 --switch=ovsk,protocols=OpenFlow13 --pre ipconf
-```
+* Now open a new terminal and run the testcases:
 
-    + Now open a new terminal and run the testcases:
+    + ```cd RouteFlow/rftest/tests/```
+    + ```python test_RF.py```
 
-```cd RouteFlow/rftest/tests/```
-
-```python test_RF.py```
-
-    + This will run all the three type of testcases.
-        + Basic tests
-        + Connectivity tests
-        + Topology tests.
+* This will run all the three type of testcases.
+    + Basic tests
+    + Connectivity tests
+    + Topology tests.
 
 Checking the output of testcases:
 --------------------------------
 
-The output of the testing framework will be updated and saved specific to each run of the command
-``` python test_RF.py``` The output is stored to file : ```RouteFlow/rftest/tests/Output.log```
+* The output of the testing framework will be updated and saved specific to each run of the command
+    + ``` python test_RF.py``` The output is stored to file : ```RouteFlow/rftest/tests/Output.log```
 
-Logs will persistantly be stored in the file : ```RouteFlow/rftest/tests/RFtest.log```
+* Logs will persistantly be stored in the file : ```RouteFlow/rftest/tests/RFtest.log```
 
 Extend testcases/Implement New testcases
 ----------------------------------------
