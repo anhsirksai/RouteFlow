@@ -19,17 +19,16 @@ The testing framework requires RouteFlow and rftest to run. The usual way to ins
 all of its dependencies is as follows:
 
 * Requirements system Ubuntu 12.04 updated and git installed. 
-```apt-get update & apt-get upgrade & apt-get install git```
+    + ```apt-get update & apt-get upgrade & apt-get install git```
 
 * Clone RouteFlow
-
-```git clone https://github.com/raphaelvrosa/RouteFlow```
+    + ```git clone https://github.com/raphaelvrosa/RouteFlow```
 
 * Build all the required components of RouteFlow
 
     + ``` cd RouteFlow ```
     + ``` git checkout vandervecken ```
-    + ```./build.sh -c -z -n -i ryu``
+    + ``` ./build.sh -c -z -n -i ryu ```
 
 Running
 -------
@@ -40,6 +39,7 @@ running test cases. Below are the commands for the same.
 
 * Prior to running the tests, OpenVswitch service should be running. Run the following 
 script to bring up the service:
+
     + ``` cd RouteFlow/```  
     + ```./ovs-init.sh```
 
@@ -53,7 +53,7 @@ script to bring up the service:
 
 * Now open a new terminal and run the testcases:
 
-    +```cd RouteFlow/rftest/tests/```
+    + ```cd RouteFlow/rftest/tests/```
     + ```python test_RF.py```
 
 * This will run all the three type of testcases.
