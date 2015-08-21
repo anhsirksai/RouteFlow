@@ -1,8 +1,5 @@
-2015-08-18 18:24:55,769 root            INFO     saikrishna
-2015-08-18 18:24:55,776 root            INFO     Test containers class Begin
 2015-08-18 18:24:55,780 root            ERROR    ERROR lxc-info: 'rfvmA' is not running
 
-2015-08-18 18:24:55,780 root            INFO     Test Mongod class Begin
 2015-08-18 18:24:55,793 root            ERROR    ERROR 
 2015-08-18 18:24:55,793 root            ERROR    ERROR (No info could be read for "-p": geteuid()=1000 but you should be root.)
 
