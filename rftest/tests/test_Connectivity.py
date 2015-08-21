@@ -16,7 +16,7 @@ class Connectivity():
 
     def getContainerRoutes(self, name):
         #cmd = "lxc-attach -n " + name + " -- /home route -n"
-        cmd = "route -n"
+        cmd = "sudo lxc-attach -n" + name + " -- /sbin/route -n"
         sp =  subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
         out,err = sp.communicate()
         return out,err
@@ -38,16 +38,41 @@ class Connectivity():
         0.0.0.0         172.31.2.1      0.0.0.0         UG    100    0        0 eth0
         172.31.2.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0
 
+        In [36]: out1.splitlines(True)[2:]
+        Out[36]: 
+        ['0.0.0.0         172.31.1.1      0.0.0.0         UG    100    0        0 eth0\n',
+         '172.31.1.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0\n']
+
+>  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
+172.31.1.2
+>  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1    
+172.31.1.2
+
+>  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'                  
+eth0
+>  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'                          
+eth0
+lo
         '''
-        out = getContainerRoutes(name)
-        for line in out:
-            print line #handle storing of only routes in the self.containerRoutes dictionary.
+        out,err = getContainerRoutes(name)
+        if out != '':
+            self.containerRoutes[name] = out.splitlines(True)[2:]
+        elif err != '':
+            self.logger.error(name, err)
+        #handle storing of only routes in the self.containerRoutes dictionary.
+        #out = getContainerRoutes(name)
+        #for line in out:
+        #    print line #handle storing of only routes in the self.containerRoutes dictionary.
 
 
     def getContainerInterfaces(self, name):
-        cmd = "lxc-ps -n " + name + "ifconfig"
+        cmd = "sudo lxc-attach -n" + name + " -- /sbin/ifconfig"
+        sp =  subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+        out,err = sp.communicate()
+        return out,err
+        #cmd = "lxc-ps -n " + name + "ifconfig"
 
-        return subprocess.call(cmd)
+        #return subprocess.call(cmd)
 
     def parseContainerInterfaces(self, name):
         '''
