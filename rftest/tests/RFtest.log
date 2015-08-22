@@ -1,27 +1,29 @@
-Aug 22 10:08:06 Test_Containers INFO     
+Aug 22 10:30:50 Test_Containers INFO     
 
-Aug 22 10:08:06 Test_Containers INFO     =============Test containers class Begin==================
-Aug 22 10:08:06 Test_Containers INFO     running test : lxc-info -nrfvmA
-Aug 22 10:08:06 Test_Containers INFO     verifying test : lxc-info -nrfvmA
-Aug 22 10:08:06 Test_Containers INFO     analysing test : lxc-info -nrfvmA
-Aug 22 10:08:06 Test_Containers INFO     testcase with command lxc-info -nrfvmA FAILED 
-Aug 22 10:08:06 Test_Mongo      INFO     
+Aug 22 10:30:50 Test_Containers INFO     =============Test containers class Begin==================
+Aug 22 10:30:50 Test_Containers INFO     running test : lxc-info -nrfvmA
+Aug 22 10:30:50 Test_Containers INFO     verifying test : lxc-info -nrfvmA
+Aug 22 10:30:50 Test_Containers INFO     analysing test : lxc-info -nrfvmA
+Aug 22 10:30:50 Test_Containers INFO     testcase with command lxc-info -nrfvmA FAILED 
+Aug 22 10:30:50 Test_Mongo      INFO     
 
-Aug 22 10:08:06 Test_Mongo      INFO     =========Test Mongod class Begin==============
-Aug 22 10:08:06 Test_Mongo      INFO     running test : ps aux | grep mongo
-Aug 22 10:08:06 Test_Mongo      INFO     running test : netstat -plant | grep 27017
-Aug 22 10:08:06 Test_Mongo      INFO     verifying test : ps aux | grep mongo
-Aug 22 10:08:06 Test_Mongo      INFO     verifying test : netstat -plant | grep 27017
-Aug 22 10:08:06 Test_Mongo      INFO     analysing test : netstat -plant | grep 27017
-Aug 22 10:08:06 Test_Mongo      INFO     testcase with command netstat -plant | grep 27017 FAILED 
-Aug 22 10:08:06 Test_OVS        INFO     
+Aug 22 10:30:50 Test_Mongo      INFO     =========Test Mongod class Begin==============
+Aug 22 10:30:50 Test_Mongo      INFO     running test : ps aux | grep mongo
+Aug 22 10:30:50 Test_Mongo      INFO     running test : netstat -plant | grep 27017
+Aug 22 10:30:50 Test_Mongo      INFO     verifying test : ps aux | grep mongo
+Aug 22 10:30:50 Test_Mongo      INFO     verifying test : netstat -plant | grep 27017
+Aug 22 10:30:50 Test_Mongo      INFO     analysing test : netstat -plant | grep 27017
+Aug 22 10:30:50 Test_Mongo      INFO     testcase with command netstat -plant | grep 27017 FAILED 
+Aug 22 10:30:50 Test_OVS        INFO     
 
-Aug 22 10:08:06 Test_OVS        INFO     ==========Test OVS class Begin===============
-Aug 22 10:08:06 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     running test : ps aux | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     verifying test : ps aux | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
-Aug 22 10:08:06 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 FAILED 
+Aug 22 10:30:50 Test_OVS        INFO     ==========Test OVS class Begin===============
+Aug 22 10:30:50 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     running test : ps aux | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     verifying test : ps aux | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 PASSED 
+Aug 22 10:30:50 Test_OVS        INFO     analysing test : sudo ovs-dpctl show | grep dp0
+Aug 22 10:30:50 Test_OVS        INFO     testcase with command sudo ovs-dpctl show | grep dp0 PASSED 
