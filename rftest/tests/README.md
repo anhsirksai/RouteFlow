@@ -91,6 +91,15 @@ To fix this issue, I ran the following command to get 3.8:
 or you can run the following command to get 3.5
 ```sudo apt-get install linux-image-generic-lts-quantal linux-headers-generic-lts-quantal```
 
+Issues
+------
+
+* findTests() function in test_RF.py should be updated with parameters from configureTests dictionary
+* Currently Logging server logs only to RFtest.log. Should resolve the issue so that logs will be printed into Debug.log, Output.log and Error.log accordingly.
+* This can possibly be a future task. But using argparse to accept huge number of parameters doesnot make sense and make the code clumsy. So I am planning to include a josn file that holds all the comman line parameters and will be used to initialise Tests class.
+* Currently tests_connectivity classes's constructor is not able to take the desired number of arguments. Should fix this issue.
+* As suggested, a customFind function for ping needs to be implemented and incorporated into findTests() defnition.
+
 License
 -------
 
