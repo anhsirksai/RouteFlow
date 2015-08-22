@@ -161,7 +161,7 @@ lo
         self.analyse
         '''
         self.addTestsDefault()
-        #self.logger.getlogger("Test_connectivity")
+        self.logger = logging.getLogger("Test_Connectivity")
         self.logger.info("Test connectivity class Begin")
         self.evaluate()
         self.verify()

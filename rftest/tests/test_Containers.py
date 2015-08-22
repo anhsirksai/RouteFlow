@@ -1,3 +1,4 @@
+import logging
 from test_RF import RFUnitTests
 
 class Containers(RFUnitTests):
@@ -40,8 +41,9 @@ class Containers(RFUnitTests):
         self.addTestsDefault()
         cmd = self.setTestsParams("lxc-info -n","rfvmA")
         self.addTest(cmd,"find","state: RUNNING")
-        #self.logger.getlogger("Test_containers")
-        self.logger.info("Test containers class Begin")
+        self.logger = logging.getLogger("Test_Containers")
+        self.logger.info("\n")
+        self.logger.info("=============Test containers class Begin==================")
         self.evaluate()
         self.verify()
         self.analyse()

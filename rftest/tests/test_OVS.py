@@ -1,3 +1,4 @@
+import logging
 from test_RF import RFUnitTests
 
 class OVS(RFUnitTests):
@@ -7,8 +8,8 @@ class OVS(RFUnitTests):
     the method of evaluation of the command and the expected output
     '''
     TESTS = {
-            'ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},
-            'ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},
+            'sudo ovs-vsctl show | grep dp0':{'method':'find', 'output':'dp0'},
+            'sudo ovs-dpctl show | grep dp0':{'method':'find', 'output':'dp0'},
     }
 
     def __init__(self, logger):
@@ -44,8 +45,12 @@ class OVS(RFUnitTests):
         self.addTestsDefault()
         self.addTest("ps aux | grep dp0","find","ovsdb-server")
         self.addTest("ps aux | grep dp0","find","ovs-vswitchd")
-        #self.logger = logging.getlogger("Test_OVS")
-        self.logger.info("Test OVS class Begin")
+        print "\n"
+        print self.tests
+        print "\n"
+        self.logger = logging.getLogger("Test_OVS")
+        self.logger.info("\n")
+        self.logger.info("==========Test OVS class Begin===============")
         self.evaluate()
         self.verify()
         self.analyse()

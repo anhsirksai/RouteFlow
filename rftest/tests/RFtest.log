@@ -1,84 +1,27 @@
-Aug 17 12:54:32 root            DEBUG    saikrishna
-Aug 17 12:54:32 root            INFO     saikrishna
-Aug 17 12:54:32 root            INFO     sai krishna
-Aug 17 12:55:08 root            DEBUG    saikrishna
-Aug 17 12:55:08 root            INFO     saikrishna
-Aug 17 12:55:08 root            INFO     sai krishna
-Aug 17 12:55:08 root            INFO     sai krishna
-Aug 17 12:56:03 root            DEBUG    saikrishna
-Aug 17 12:56:03 root            INFO     saikrishna
-Aug 17 12:56:03 root            INFO     sai krishna
-Aug 17 12:56:03 root            INFO     sai krishna
-Aug 17 12:57:05 root            DEBUG    saikrishna
-Aug 17 12:57:05 root            INFO     saikrishna
-Aug 17 12:57:05 root            INFO     sai krishna
-Aug 17 12:57:05 root            INFO     sai krishna
-Aug 17 12:57:31 root            DEBUG    saikrishna
-Aug 17 12:57:31 root            INFO     saikrishna
-Aug 17 12:57:31 root            INFO     sai krishna
-Aug 17 12:57:31 root            INFO     sai krishna
-Aug 17 12:57:31 root            INFO     Test OVS class Begin
-Aug 17 13:04:16 root            DEBUG    saikrishna
-Aug 17 13:04:16 root            INFO     saikrishna
-Aug 17 13:04:16 root            INFO     sai krishna
-Aug 17 13:04:16 root            INFO     sai krishna
-Aug 17 13:04:16 root            INFO     Test OVS class Begin
-Aug 17 13:06:21 root            DEBUG    saikrishna
-Aug 17 13:06:21 root            INFO     saikrishna
-Aug 17 13:06:21 root            INFO     sai krishna
-Aug 17 13:06:21 root            INFO     sai krishna
-Aug 17 13:06:21 root            INFO     Test OVS class Begin
-Aug 17 13:10:51 root            DEBUG    saikrishna
-Aug 17 13:10:51 root            INFO     saikrishna
-Aug 17 13:10:51 root            INFO     sai krishna
-Aug 17 13:10:51 root            INFO     sai krishna
-Aug 17 13:10:51 root            INFO     Test OVS class Begin
-Aug 17 13:12:25 root            DEBUG    saikrishna
-Aug 17 13:12:25 root            INFO     saikrishna
-Aug 17 13:12:25 root            INFO     sai krishna
-Aug 17 13:12:25 root            INFO     sai krishna
-Aug 17 13:12:25 root            INFO     Test OVS class Begin
-Aug 17 13:16:20 root            DEBUG    saikrishna
-Aug 17 13:16:20 root            INFO     saikrishna
-Aug 17 13:16:20 root            INFO     sai krishna
-Aug 17 13:16:20 root            INFO     sai krishna
-Aug 17 13:16:20 root            INFO     Test OVS class Begin
-Aug 17 13:17:56 root            DEBUG    saikrishna
-Aug 17 13:17:56 root            INFO     saikrishna
-Aug 17 13:17:56 root            INFO     sai krishna
-Aug 17 13:17:56 root            INFO     sai krishna
-Aug 17 13:17:56 root            INFO     Test OVS class Begin
-Aug 17 13:18:44 root            DEBUG    saikrishna
-Aug 17 13:18:44 root            INFO     saikrishna
-Aug 17 13:18:44 root            INFO     sai krishna
-Aug 17 13:18:44 root            INFO     sai krishna
-Aug 17 13:18:44 root            INFO     Test OVS class Begin
-Aug 17 13:20:07 root            DEBUG    saikrishna
-Aug 17 13:20:07 root            INFO     saikrishna
-Aug 17 13:20:07 root            INFO     sai krishna
-Aug 17 13:20:07 root            INFO     sai krishna
-Aug 17 13:20:07 root            INFO     Test OVS class Begin
-Aug 17 13:23:19 root            DEBUG    saikrishna
-Aug 17 13:23:19 root            INFO     saikrishna
-Aug 17 13:23:19 root            INFO     sai krishna
-Aug 17 13:23:19 root            INFO     sai krishna
-Aug 17 13:23:19 root            INFO     Test OVS class Begin
-Aug 17 13:24:51 root            DEBUG    saikrishna
-Aug 17 13:24:51 root            INFO     saikrishna
-Aug 17 13:24:51 root            INFO     sai krishna
-Aug 17 13:24:51 root            INFO     sai krishna
-Aug 17 13:24:51 root            INFO     Test OVS class Begin
-Aug 17 13:31:27 root            DEBUG    saikrishna
-Aug 17 13:31:27 root            INFO     saikrishna
-Aug 17 13:31:27 root            INFO     sai krishna
-Aug 17 13:31:27 root            INFO     sai krishna
-Aug 17 13:31:27 root            INFO     Test OVS class Begin
-Aug 18 18:24:55 root            DEBUG    saikrishna
-Aug 18 18:24:55 root            INFO     saikrishna
-Aug 18 18:24:55 root            INFO     Test containers class Begin
-Aug 18 18:24:55 root            ERROR    ERROR lxc-info: 'rfvmA' is not running
+Aug 22 10:08:06 Test_Containers INFO     
 
-Aug 18 18:24:55 root            INFO     Test Mongod class Begin
-Aug 18 18:24:55 root            ERROR    ERROR 
-Aug 18 18:24:55 root            ERROR    ERROR (No info could be read for "-p": geteuid()=1000 but you should be root.)
+Aug 22 10:08:06 Test_Containers INFO     =============Test containers class Begin==================
+Aug 22 10:08:06 Test_Containers INFO     running test : lxc-info -nrfvmA
+Aug 22 10:08:06 Test_Containers INFO     verifying test : lxc-info -nrfvmA
+Aug 22 10:08:06 Test_Containers INFO     analysing test : lxc-info -nrfvmA
+Aug 22 10:08:06 Test_Containers INFO     testcase with command lxc-info -nrfvmA FAILED 
+Aug 22 10:08:06 Test_Mongo      INFO     
 
+Aug 22 10:08:06 Test_Mongo      INFO     =========Test Mongod class Begin==============
+Aug 22 10:08:06 Test_Mongo      INFO     running test : ps aux | grep mongo
+Aug 22 10:08:06 Test_Mongo      INFO     running test : netstat -plant | grep 27017
+Aug 22 10:08:06 Test_Mongo      INFO     verifying test : ps aux | grep mongo
+Aug 22 10:08:06 Test_Mongo      INFO     verifying test : netstat -plant | grep 27017
+Aug 22 10:08:06 Test_Mongo      INFO     analysing test : netstat -plant | grep 27017
+Aug 22 10:08:06 Test_Mongo      INFO     testcase with command netstat -plant | grep 27017 FAILED 
+Aug 22 10:08:06 Test_OVS        INFO     
+
+Aug 22 10:08:06 Test_OVS        INFO     ==========Test OVS class Begin===============
+Aug 22 10:08:06 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     running test : ps aux | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     verifying test : ps aux | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
+Aug 22 10:08:06 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 FAILED 

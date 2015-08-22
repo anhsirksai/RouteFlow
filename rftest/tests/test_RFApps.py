@@ -1,3 +1,4 @@
+import logging
 from test_RF import RFUnitTests
 
 class RFApps(RFUnitTests):
@@ -52,8 +53,8 @@ class RFServer(RFApps):
         '''
         self.addTestsDefault()
         self.addTest("ps aux | grep rfserver","find","python ./rfserver/rfserver/py")
-        #self.logger.getlogger("Test_rfserver")
-        self.logger.info("Test rfserver class Begin")
+        self.logger = logging.getLogger("Test_RFServer")
+        self.logger.info("\n =============Test rfserver class Begin================")
         self.evaluate()
         self.verify()
         self.analyse()
@@ -99,8 +100,8 @@ class RFProxy(RFApps):
         cmd = self.setTestsParams("netstat -plant | grep", self.port)
         self.addTest(cmd,"find",output)
 
-        #self.logger.getlogger("Test_rfproxy")
-        self.logger.info("Test rfproxy class Begin")
+        self.logger = logging.getLogger("Test_RFProxy")
+        self.logger.info("\n ================Test rfproxy class Begin==================")
         self.evaluate()
         self.verify()
         self.analyse()

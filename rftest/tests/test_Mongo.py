@@ -1,3 +1,4 @@
+import logging
 from test_RF import RFUnitTests
 
 class Mongo(RFUnitTests):
@@ -46,8 +47,9 @@ class Mongo(RFUnitTests):
         self.addTestsDefault()
         cmd = self.setTestsParams("netstat -plant | grep", 27017)
         self.addTest(cmd,"find","mongod")
-        #self.logger.getlogger("Test_Mongod")
-        self.logger.info("Test Mongod class Begin")
+        self.logger = logging.getLogger("Test_Mongo")
+        self.logger.info("\n")
+        self.logger.info("=========Test Mongod class Begin==============")
         self.evaluate()
         self.verify()
         self.analyse()
