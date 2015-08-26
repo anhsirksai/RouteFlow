@@ -38,7 +38,7 @@ class Tests:
 
     def __init__(self):
         self.testsToRun = {'OVS':True, 'Containers':False, 'RFApps':False}
-        self.testsParams = {'Mongo':27017, 'Containers':['rfvmA','rfvmB'], 'RFApps':['rfproxy','rfserver']}
+        self.testsParams = {'Mongo':27017, 'Containers':['rfvmA','rfvmB']}#, 'RFApps':['rfproxy','rfserver']}
         self.outputFormat = {'txt':False, 'terminal':False}
         self.outputModes = {'json':False, 'raw':False}
         self.use_pytest = False
@@ -182,16 +182,14 @@ class Tests:
                                     for classes_ in Tests.CATALOGUE[obj]: #For each file, instantiate an object for the classes in it.
                                         module = __import__(obj)
                                         class_ = getattr(module, classes_)
-                                        self.setUpTests[obj] = class_(self.logger)
+                                        self.setUpTests[classes_] = class_(self.logger)
                                 else:
                                     module = __import__(obj)
                                     #getattr(li, "pop") is the same as calling li.pop
                                     class_ = getattr(module, Tests.CATALOGUE[obj])
-                                    #class_ = getattr(module, "OVS")
                                     print class_
                                     self.setUpTests[obj] = class_(self.logger)
                                     for confkey,confvalues in self.testsParams.items():
-                                        print "saisaisai %s %s", confkey , testName
                                         if testName == confkey:
                                             print "Mongoooo %s", confkey
                                             self.setUpTests[obj].setTestsParams(confvalues)
@@ -214,7 +212,6 @@ class Tests:
         #    if tests == True:
         #       logger =  self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
-        print "saikrishna runTests"
         for test in self.setUpTests.keys():
             self.setUpTests[test].run_tests()
 
@@ -390,13 +387,13 @@ if __name__ == '__main__':
     #testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
     #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
     #kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'Connectivity':True}
-    kwargs = {'OVS':True,'Containers':True, 'Mongo':True}
+    kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True}
     args = ("true",1)
     #testsobj.setTestsToRun(*args,**kwargs) #args.testcases will be a dictionary that is passed.
     testsobj.setTestsToRun(**kwargs) #args.testcases will be a dictionary that is passed.
     #testsobj.setTestsToRun() #args.testcases will be a dictionary that is passed.
     #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
-    testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1')#, rfapp = args.rfapps)
+    testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1', RFApps = ['RFServer','RFClient','RFProxy'])
     testsobj.setTestsOutputFormat()
     testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
 

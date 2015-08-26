@@ -32,7 +32,6 @@ class Mongo(RFUnitTests):
         In this case modify cmd in self.tests
         netstat -plant | grep $mongoport
         '''
-        print "fuck you mongo"
         self.port = param
 
     def run_tests(self):

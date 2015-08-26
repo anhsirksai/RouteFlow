@@ -13,7 +13,7 @@ class RFApps(RFUnitTests):
         super(RFApps, self).__init__(logger)
 
     def addTestsDefault(self):
-        self.tests = self.TESTS #tests is initialised in RFUnitTests class and should be filled in here.
+        self.tests = self.TESTS
 
     def addTest(self, cmd, method, output):
         '''
@@ -30,7 +30,6 @@ class RFApps(RFUnitTests):
         In this case modify cmd in self.tests
         '''
         #return str(cmd) + str(param)
-        #self.port = param
         pass
 
     def run_tests(self):
@@ -47,6 +46,15 @@ class RFServer(RFApps):
     def __init__(self, logger):
         super(RFServer, self).__init__(logger)
 
+    def setTestsParams(self, param):
+        '''
+        Define for example self.containernames, self.mongoport, self.controllerport
+        for Container, Mongo, Controller classes respectively
+        In this case modify cmd in self.tests
+        '''
+        #return str(cmd) + str(param)
+        pass
+
     def run_tests(self):
         '''
         basically runs methods inherited with self.tests attribute
@@ -54,10 +62,12 @@ class RFServer(RFApps):
         self.verify
         self.analyse
         '''
+        print "Fuck you RFserver"
         self.addTestsDefault()
         self.addTest("ps aux | grep rfserver","find","python ./rfserver/rfserver/py")
         self.logger = logging.getLogger("Test_RFServer")
-        self.logger.info("\n =============Test rfserver class Begin================")
+        self.logger.info("\n")
+        self.logger.info("=============Test rfserver class Begin================")
         self.evaluate()
         self.verify()
         self.analyse()
@@ -101,11 +111,55 @@ class RFProxy(RFApps):
         self.addTest("ps aux | grep rfproxy","find",output)
 
         output =  self.setTestsOutputs('127.0.0.1:', '', self.port)
-        cmd = self.setTestsParams("netstat -plant | grep", self.port)
+        cmd = "netstat -plant | grep" +  str(self.port)
         self.addTest(cmd,"find",output)
 
         self.logger = logging.getLogger("Test_RFProxy")
-        self.logger.info("\n ================Test rfproxy class Begin==================")
+        self.logger.info("\n")
+        self.logger.info("================Test rfproxy class Begin==================")
         self.evaluate()
         self.verify()
         self.analyse()
+
+class RFClient(RFApps):
+
+    def __init__(self,logger):
+        super(RFClient, self).__init__(logger)
+
+
+    def setTestsParams(self, param):
+        '''
+        Define for example self.containernames, self.mongoport, self.controllerport
+        for Container, Mongo, Controller classes respectively
+
+        In this case modify cmd in self.tests by adding list of tests with vm names
+        '''
+        #return str(cmd) + str(param)
+        self.port = param
+
+    def run_tests(self):
+        '''
+        basically runs methods inherited with self.tests attribute
+        self.evaluate
+        self.verify
+        self.analyse
+        '''
+        self.addTestsDefault()
+
+        cmd = "sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient"
+        self.addTest(cmd,"find","rfclient")
+
+        cmd = "sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient"
+        self.addTest(cmd,"find","")
+
+        cmd = "sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient"
+        self.addTest(cmd,"find","")
+
+        self.logger = logging.getLogger("Test_RFClient")
+        self.logger.info("\n")
+        self.logger.info("================Test rfclient class Begin==================")
+        self.evaluate()
+        self.verify()
+        self.analyse()
+
+
