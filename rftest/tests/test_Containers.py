@@ -1,4 +1,5 @@
 import logging
+import subprocess
 from test_RF import RFUnitTests
 
 class Containers(RFUnitTests):
@@ -30,6 +31,19 @@ class Containers(RFUnitTests):
         '''
         return str(cmd) + str(param)
 
+    def evaluate(self):
+        for key,value in self.tests.items():
+            self.logger.info("running test : %s", key)
+            sp = subprocess.Popen(key,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+            out,err = sp.communicate()
+            if out != '':
+                self.logger.info("testcase with command %s PASSED ", key)
+                self.logger.info("Status of containers")
+                self.logger.info("\n\n %s", out)
+            elif err != '':
+                self.logger.info("testcase with command %s FAILED ", key)
+                self.logger.error("Status of containers could not be found")
+                self.logger.error(err)
 
     def run_tests(self):
         '''
@@ -39,11 +53,12 @@ class Containers(RFUnitTests):
         self.analyse
         '''
         self.addTestsDefault()
-        cmd = self.setTestsParams("lxc-info -n","rfvmA")
+        cmd = self.setTestsParams("sudo lxc-list"," -s")
         self.addTest(cmd,"find","state: RUNNING")
         self.logger = logging.getLogger("Test_Containers")
         self.logger.info("\n")
         self.logger.info("=============Test containers class Begin==================")
+        self.logger.info("+++ This test case is to list down the currently 'running', 'stopped' and 'Frozen' list of containers +++")
         self.evaluate()
-        self.verify()
-        self.analyse()
+        #self.verify()
+        #self.analyse()
