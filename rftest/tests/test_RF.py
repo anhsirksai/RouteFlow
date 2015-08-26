@@ -185,13 +185,16 @@ class Tests:
                                         self.setUpTests[obj] = class_(self.logger)
                                 else:
                                     module = __import__(obj)
+                                    #getattr(li, "pop") is the same as calling li.pop
                                     class_ = getattr(module, Tests.CATALOGUE[obj])
                                     #class_ = getattr(module, "OVS")
                                     print class_
                                     self.setUpTests[obj] = class_(self.logger)
                                     for confkey,confvalues in self.testsParams.items():
+                                        print "saisaisai %s %s", confkey , testName
                                         if testName == confkey:
-                                            self.setUpTests[obj].setTestsParams("fill cmd from tests",confvalues)
+                                            print "Mongoooo %s", confkey
+                                            self.setUpTests[obj].setTestsParams(confvalues)
 
     def runTests(self):
         '''
@@ -280,7 +283,6 @@ class RFUnitTests(object):
 
         #key of self.evaluateDictionary is always equal to key of self.tests dictionary.
         #This is how data structure is built.Hence tests[inputs] will work.
-        #TypeError : there should be a loop on outErrDict. then the error will go away.
         #print self.evaluateDictionary.items()
         #self.logger.debug("begin evaluateDictionary")
         #self.logger.debug(self.evaluateDictionary)
@@ -288,6 +290,7 @@ class RFUnitTests(object):
         
         for cmdInput,outErrDict in self.evaluateDictionary.items():
             self.logger.info("verifying test : %s", cmdInput)
+            print "verifying test : %s", cmdInput
             print "1"
             for keys,values in outErrDict.items():
                 # Logic: If err value exists, do not check for out
@@ -295,34 +298,24 @@ class RFUnitTests(object):
                 # Fill in assert:True if 'output'.method = 'out'
                 # else, assert:False.
                 print '2'
-                if keys == 'err' and values != '':
+                #if keys == 'err' and values != '':
+                if keys == 'err':
                     print '3'
                     self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
-                elif keys == 'out' and values != '':
-                    print '4'        
-                    if self.tests[cmdInput]['method'] == 'find':
-                        print '5'
-                        if values.find(self.tests[cmdInput]['output']) != -1:
-                            print '6'
-                            self.verifyDictionary[cmdInput] = {'assert':True, 'result':values}
-                        #else : TODO case for custom find function.
-                        #if self.tests[inputs]['method'] == 'findfp':
-                        #This is a part of the function passed as argument from test_Connectivity file.
-
-        #for cmdInput,outErrDict in self.evaluateDictionary.items():
-        #    print "\n", outErrDict.values()
-        #    print outErrDict.values()[0]['err']
-        #    if outErrDict.values()[0]['out'] != ' ':
-        #    if self.tests[cmdInput]['method'] == 'find':
-        #        if str(outErrDict.values()[0]['out']).find(self.tests[cmdInput]['output']) != -1:
-        #            self.verifyDictionary[cmdInput] = {'assert':True, 'result':str(outErrDict.values()[0])}
-        #            verifyDictionary[cmdInput] = {'assert':True, 'result':str(outErrDict.values()[0]['out'])}
-        #        else :
-        #            verifyDictionary[cmdInput] = {'assert':False, 'result':str(outErrDict.values()[0]['out'])}
-        #            #if self.tests[inputs]['method'] == 'findfp':
-        #            #This is a part of the function passed as argument from test_Connectivity file.
-        #    if outErrDict.values()[0]['err']:
-        #        self.verifyDictionary[cmdInput] = {'assert':False, 'result':str(outErrDict.values()[0]['err'])}
+                elif keys == 'out' : 
+                    if values == '':
+                        print 3.5
+                        self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
+                    else:
+                        print '4'        
+                        if self.tests[cmdInput]['method'] == 'find':
+                            print '5'
+                            if values.find(self.tests[cmdInput]['output']) != -1:
+                                print '6'
+                                self.verifyDictionary[cmdInput] = {'assert':True, 'result':values}
+                            #else : TODO case for custom find function.
+                            #if self.tests[inputs]['method'] == 'findfp':
+                            #This is a part of the function passed as argument from test_Connectivity file.
 
     def analyse(self):
         '''
@@ -403,7 +396,7 @@ if __name__ == '__main__':
     testsobj.setTestsToRun(**kwargs) #args.testcases will be a dictionary that is passed.
     #testsobj.setTestsToRun() #args.testcases will be a dictionary that is passed.
     #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
-    testsobj.configureTests(mongo = 5056, containers = 'rfvmA', connectivity = 'rfvm1')#, rfapp = args.rfapps)
+    testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1')#, rfapp = args.rfapps)
     testsobj.setTestsOutputFormat()
     testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
 

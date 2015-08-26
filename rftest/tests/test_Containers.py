@@ -12,6 +12,7 @@ class Containers(RFUnitTests):
 
     def __init__(self, logger):
         super(Containers, self).__init__(logger)
+        self.containerNames = []
 
     def addTestsDefault(self):
         self.tests = self.TESTS #tests is initialised in RFUnitTests class and should be filled in here.
@@ -23,13 +24,13 @@ class Containers(RFUnitTests):
         self.TESTS[str(cmd)] = {'method':str(method),
                                 'output':str(output),}
 
-    def setTestsParams(self, cmd, param):
+    def setTestsParams(self, param):
         '''
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
         '''
-        return str(cmd) + str(param)
+        self.containerNames = param
 
     def evaluate(self):
         for key,value in self.tests.items():
@@ -53,7 +54,7 @@ class Containers(RFUnitTests):
         self.analyse
         '''
         self.addTestsDefault()
-        cmd = self.setTestsParams("sudo lxc-list"," -s")
+        cmd = "sudo lxc-list -s"
         self.addTest(cmd,"find","state: RUNNING")
         self.logger = logging.getLogger("Test_Containers")
         self.logger.info("\n")

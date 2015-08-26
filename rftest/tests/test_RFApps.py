@@ -22,13 +22,16 @@ class RFApps(RFUnitTests):
         self.TESTS[str(cmd)] = {'method':str(method),
                                 'output':str(output),}
 
-    def setTestsParams(self, cmd, param):
+    #def setTestsParams(self, cmd, param):
+    def setTestsParams(self, param):
         '''
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
         '''
-        return str(cmd) + str(param)
+        #return str(cmd) + str(param)
+        #self.port = param
+        pass
 
     def run_tests(self):
         '''
@@ -68,13 +71,14 @@ class RFProxy(RFApps):
         #self.port = port
 
     #ryu-manager --use-stderr --ofp-tcp-listen-port=$CONTROLLER_PORT ryu-rfproxy/rfproxy.py"
-    def setTestsParams(self, cmd, param):
+    def setTestsParams(self, param):
         '''
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
         '''
-        return str(cmd) + str(param)
+        #return str(cmd) + str(param)
+        self.port = param
 
     def setTestsOutputs(self, output1, output2, param):
         '''
