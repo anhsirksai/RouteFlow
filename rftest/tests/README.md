@@ -94,11 +94,13 @@ or you can run the following command to get 3.5
 Issues
 ------
 
-* findTests() function in test_RF.py should be updated with parameters from configureTests dictionary
 * Currently Logging server logs only to RFtest.log. Should resolve the issue so that logs will be printed into Debug.log, Output.log and Error.log accordingly.
-* This can possibly be a future task. But using argparse to accept huge number of parameters doesnot make sense and make the code clumsy. So I am planning to include a josn file that holds all the comman line parameters and will be used to initialise Tests class.
-* Currently tests_connectivity classes's constructor is not able to take the desired number of arguments. Should fix this issue.
-* As suggested, a customFind function for ping needs to be implemented and incorporated into findTests() defnition.
+* While filling the TESTS dictinary in Connectivity class, *kwargs is used to accept the additional parameters. - The implementation needs to be fixed in "addTest" defnition to accepts kwargs.
+* This can possibly be a future task. But using argparse to accept huge number of parameters doesnot make sense and make the code clumsy. So I am planning to include a josn file that holds all the comman line parameters and will be used to initialise Tests class. - Still a future task.
+* Currently tests_connectivity classes's constructor is not able to take the desired number of arguments. Should fix this issue. -Resolved
+* As suggested, a customFind function for ping needs to be implemented and incorporated into findTests() defnition. - Implemented
+* findTests() function in test_RF.py should be updated with parameters from configureTests dictionary - Resolved.
+
 
 License
 -------
