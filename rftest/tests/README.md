@@ -100,6 +100,8 @@ Issues
 * Currently tests_connectivity classes's constructor is not able to take the desired number of arguments. Should fix this issue. -Resolved
 * As suggested, a customFind function for ping needs to be implemented and incorporated into findTests() defnition. - Implemented
 * findTests() function in test_RF.py should be updated with parameters from configureTests dictionary - Resolved.
+
+
 License
 -------
 
