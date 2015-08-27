@@ -1,12 +1,12 @@
 from test_RF import RFUnitTests
 import subprocess
 
-class Connectivity(RFUnitTests()):
+class Connectivity(RFUnitTests):
 
     TESTS = {}
 
     def __init__(self, logger, containerNames = 'rfvm1'):
-        super(Conncetivity, self).__init__(logger)
+        super(Connectivity, self).__init__(logger)
         self.containerRoutes = {}
         self.containerInterfaces = {}
         self.containerNames = containerNames #string to be defined by user (e.g., in rftest2 is rfvmA, B, ...
@@ -136,6 +136,13 @@ class Connectivity(RFUnitTests()):
         #                       'output':str(output), kwargs}
         pass
 
+    def setTestsParams(self, cmd, param):
+        '''
+        Define for example self.containernames, self.mongoport, self.controllerport
+        for Container, Mongo, Controller classes respectively
+        In this case modify cmd in self.tests
+        '''
+        pass
 
     def addTestsDefault(self):
         '''
@@ -176,12 +183,21 @@ class Connectivity(RFUnitTests()):
         '''
 
         self.TESTS.clear()
-        
-    def findFunction(self):
-        '''
-        find packet loss percentage in ping result
-        and set true or false if is 100% less or not
-        '''
+        method = 'findfp'
+        output = True
+
+        for containerName in self.containerNames:
+            for cname,ifaceDetails in self.containerInterfaces.items():
+                for iface,ipaddr in ifaceDetails.items():
+                    #The ContainerName and cname should not be same.
+                    #Container1 should do ping check with ifaces on all other containers, except its own.
+                    if cname != containerName:
+                        cmd = "lxc-ps -n {name} ping -c3 {target}"
+                        cmd.format(name=containerName, target = ipaddr)
+                        addTest(cmd, method, output, name = containerName)
+
+        #addTest(cmd, method, output, name = 'b2')
+        #addTest(cmd, method, output, name = 'b1')
 
     def run_tests(self):
         '''

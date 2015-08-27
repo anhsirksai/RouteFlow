@@ -214,6 +214,43 @@ class RFUnitTests(object):
         self.logger = logger
         self.evaluateDictionary = {}
         self.verifyDictionary = {}
+        
+    def findFunction(self, output):
+        '''
+        find packet loss percentage in ping result
+        and set true or false if is 100% less or not
+
+        ubuntu@b1:~$ ping -c 3 172.31.2.2
+
+        PING 172.31.2.2 (172.31.2.2) 56(84) bytes of data.
+        64 bytes from 172.31.2.2: icmp_req=1 ttl=63 time=3.78 ms
+        64 bytes from 172.31.2.2: icmp_req=2 ttl=63 time=3.60 ms
+        64 bytes from 172.31.2.2: icmp_req=3 ttl=63 time=3.07 ms
+        
+        --- 172.31.2.2 ping statistics ---
+        3 packets transmitted, 3 received, 0% packet loss, time 2016ms
+        rtt min/avg/max/mdev = 3.072/3.486/3.781/0.305 ms
+
+        ping -c 3 8.8.8.8
+        PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+        From 10.0.2.2 icmp_seq=1 Destination Net Unreachable
+        From 10.0.2.2 icmp_seq=2 Destination Net Unreachable
+        From 10.0.2.2 icmp_seq=3 Destination Net Unreachable
+        
+        --- 8.8.8.8 ping statistics ---
+        3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2012ms
+        '''
+        #cmd = "sudo lxc-attach -n b1 -- /bin/ping -c 3 172.31.2.2"
+        #output = subprocess.Popen(cmd,stdout = subprocess.PIPE).communicate()[0]
+        #sp = subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+        #output,error = sp.communicate()
+
+        if ('unreachable' in output):
+            print False
+        # The packet loss when connected will usually be 0%, 
+        # To make sure, any thing below 100% is also counted as connected.
+        elif('0% packet loss' in out) or ('100% packet loss' not in out):
+            return True
 
     def evaluate(self):
         '''
@@ -279,6 +316,15 @@ class RFUnitTests(object):
                             if values.find(self.tests[cmdInput]['output']) != -1:
                                 print '6'
                                 self.verifyDictionary[cmdInput] = {'assert':True, 'result':values}
+
+                        elif self.tests[cmdInput]['method'] == 'findfp':
+                            print '7'
+                            #TODO : The findfp should be handled as a closure.
+                            if self.findFunction(values) == True:
+                                self.verifyDictionary[cmdInput] = {'assert':True, 'result':values}
+                            else :
+                                self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
+ 
                             #else : TODO case for custom find function.
                             #if self.tests[inputs]['method'] == 'findfp':
                             #This is a part of the function passed as argument from test_Connectivity file.
@@ -348,7 +394,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     testsobj = Tests()
 
-    kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True}
+    kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True }
+    #kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True, 'Connectivity':True}
     args = ("true",1)
     testsobj.setTestsToRun(**kwargs) #args.testcases will be a dictionary that is passed.
     testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1', RFApps = ['RFServer','RFClient','RFProxy'])
