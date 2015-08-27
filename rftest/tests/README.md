@@ -72,9 +72,9 @@ Checking the output of testcases:
 Extend testcases/Implement New testcases
 ----------------------------------------
 
-* Create a file with name test_<xyz>.py
-* Add the <xyz> to CATALOGUE dictionary.
-* To run the new class, add the <<xyz>:True> pair to testsToRun dictionary.
+* Create a file with name test_\<xyz\>.py
+* Add the <xyz> to CATALOGUE dictionary in test_RF.py.
+* To run the new class, add the <\<xyz\>:True> pair to testsToRun dictionary.
 * Pass the configuration parameters through testsParams dictionary.
 * In Class <xyz>
     + Extend class<xyz> from RFUnitTests class.
