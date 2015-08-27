@@ -39,18 +39,6 @@ class Connectivity(RFUnitTests()):
         ['0.0.0.0         172.31.1.1      0.0.0.0         UG    100    0        0 eth0\n',
          '172.31.1.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0\n']
 
-       > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
-       172.31.1.2
-
-       > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1    
-       172.31.1.2
-
-       > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'                  
-       eth0
-
-       > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'                          
-       eth0
-       lo
         '''
         out,err = getContainerRoutes(name)
         if out != '':
@@ -64,12 +52,54 @@ class Connectivity(RFUnitTests()):
 
 
     def getContainerInterfaces(self, name):
-        cmd = "sudo lxc-attach -n" + name + " -- /sbin/ifconfig"
-        sp =  subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
-        out,err = sp.communicate()
-        return out,err
-        #cmd = "lxc-ps -n " + name + "ifconfig"
-        #return subprocess.call(cmd)
+        '''
+        import subprocess
+        su = subprocess.Popen("ip -o addr show | awk \'/inet / {print $2, $4}\'",stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+        out,err = su.communicate()
+
+        In [30]: for i in out.splitlines():
+                     if i.split()[0] == 'lo':
+                         pass
+                     else:
+                         dd[i.split()[0]] = i.split()[1]           
+         
+         In [31]: dd
+         Out[31]: {'eth0': '10.0.2.15/24', 'lxcbr0': '10.0.3.1/24'}
+         
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
+        172.31.1.2
+
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1    
+        172.31.1.2
+
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'                  
+        eth0
+
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'                          
+        eth0
+        lo
+        '''
+        listIface = []
+        dictIfIp = {}
+
+        #cmd = "sudo lxc-attach -n " + name + " -- /sbin/ifconfig -a | sed \'s/[ \t].*//;/^\(lo\|\)$/d\'"
+        cmd = "sudo lxc-attach -n rfvm1 -- /sbin/ifconfig -a | sed \'s/[ \t].*//;/^\(lo\|\)$/d\'"
+        su = subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+        out,err = su.communicate()
+
+        listIface = []
+        for i in out.splitlines():
+            listIface.append(i)
+        dictIfIp.clear()
+        for i in listIface:
+            #cmd = "sudo lxc-attach -n" + name + " -- /sbin/ifconfig " + str(i) + "| grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\'"
+            cmd = "sudo lxc-attach -n rfvm1 -- /sbin/ifconfig " + str(i) + "| grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\'"
+            su = subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
+            out,err = su.communicate()
+            dictIfIp[i] = out
+
+        return dictIfIp
+
 
     def parseContainerInterfaces(self, name):
         '''
@@ -96,7 +126,7 @@ class Connectivity(RFUnitTests()):
                   collisions:0 txqueuelen:0
                   RX bytes:176 (176.0 B)  TX bytes:176 (176.0 B)
         '''
-        pass
+        self.containerInterfaces[name] = getContainerInterfaces(name)
 
     def addTest(self, cmd, method, output, **kwargs):
         '''
