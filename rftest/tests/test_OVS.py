@@ -41,13 +41,10 @@ class OVS(RFUnitTests):
         self.verify
         self.analyse
         '''
-        print "sai OVS runtests"
+
         self.addTestsDefault()
         self.addTest("ps aux | grep dp0","find","ovsdb-server")
         self.addTest("ps aux | grep dp0","find","ovs-vswitchd")
-        print "\n"
-        print self.tests
-        print "\n"
         self.logger = logging.getLogger("Test_OVS")
         self.logger.info("\n")
         self.logger.info("==========Test OVS class Begin===============")

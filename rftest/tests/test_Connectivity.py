@@ -1,14 +1,12 @@
 from test_RF import RFUnitTests
 import subprocess
 
-#class Connectivity(RFUnitTests()):
-class Connectivity():
+class Connectivity(RFUnitTests()):
 
     TESTS = {}
 
-    #def __init__(self, containerNames, logger):
-    def __init__(self,containerNames):
-        #super(Conncetivity, self).__init__(logger)
+    def __init__(self, logger, containerNames = 'rfvm1'):
+        super(Conncetivity, self).__init__(logger)
         self.containerRoutes = {}
         self.containerInterfaces = {}
         self.containerNames = containerNames #string to be defined by user (e.g., in rftest2 is rfvmA, B, ...
@@ -20,8 +18,6 @@ class Connectivity():
         sp =  subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
         out,err = sp.communicate()
         return out,err
-        #return sp.stdout This is a file pointer. No use in using this method
-        #return subprocess.call(cmd)
 
     def parseContainerRoutes(self, name):
         '''
@@ -43,16 +39,18 @@ class Connectivity():
         ['0.0.0.0         172.31.1.1      0.0.0.0         UG    100    0        0 eth0\n',
          '172.31.1.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0\n']
 
->  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
-172.31.1.2
->  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1    
-172.31.1.2
+       > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
+       172.31.1.2
 
->  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'                  
-eth0
->  tests git:(vandervecken) ✗ sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'                          
-eth0
-lo
+       > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1    
+       172.31.1.2
+
+       > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'                  
+       eth0
+
+       > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'                          
+       eth0
+       lo
         '''
         out,err = getContainerRoutes(name)
         if out != '':
@@ -71,7 +69,6 @@ lo
         out,err = sp.communicate()
         return out,err
         #cmd = "lxc-ps -n " + name + "ifconfig"
-
         #return subprocess.call(cmd)
 
     def parseContainerInterfaces(self, name):
@@ -147,6 +144,9 @@ lo
         I put kwargs in addTest to insert the containers name and target so it can be logged
         in the analyse function
         '''
+
+        self.TESTS.clear()
+        
     def findFunction(self):
         '''
         find packet loss percentage in ping result

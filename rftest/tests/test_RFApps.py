@@ -13,6 +13,7 @@ class RFApps(RFUnitTests):
         super(RFApps, self).__init__(logger)
 
     def addTestsDefault(self):
+        self.TESTS.clear()
         self.tests = self.TESTS
 
     def addTest(self, cmd, method, output):
@@ -22,14 +23,12 @@ class RFApps(RFUnitTests):
         self.TESTS[str(cmd)] = {'method':str(method),
                                 'output':str(output),}
 
-    #def setTestsParams(self, cmd, param):
     def setTestsParams(self, param):
         '''
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
         '''
-        #return str(cmd) + str(param)
         pass
 
     def run_tests(self):
@@ -50,9 +49,7 @@ class RFServer(RFApps):
         '''
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
-        In this case modify cmd in self.tests
         '''
-        #return str(cmd) + str(param)
         pass
 
     def run_tests(self):
@@ -62,12 +59,14 @@ class RFServer(RFApps):
         self.verify
         self.analyse
         '''
-        print "Fuck you RFserver"
         self.addTestsDefault()
+
         self.addTest("ps aux | grep rfserver","find","python ./rfserver/rfserver/py")
+
         self.logger = logging.getLogger("Test_RFServer")
         self.logger.info("\n")
         self.logger.info("=============Test rfserver class Begin================")
+
         self.evaluate()
         self.verify()
         self.analyse()
@@ -77,17 +76,14 @@ class RFProxy(RFApps):
     def __init__(self, logger):
         super(RFProxy, self).__init__(logger)
         self.port = 6653
-        #super(RFproxy, self).__init__(logger, port=6653)
-        #self.port = port
 
     #ryu-manager --use-stderr --ofp-tcp-listen-port=$CONTROLLER_PORT ryu-rfproxy/rfproxy.py"
     def setTestsParams(self, param):
         '''
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
-        In this case modify cmd in self.tests
+        In this case modify port number, which is passed as an argument while running testcase.
         '''
-        #return str(cmd) + str(param)
         self.port = param
 
     def setTestsOutputs(self, output1, output2, param):
@@ -107,16 +103,18 @@ class RFProxy(RFApps):
         self.analyse
         '''
         self.addTestsDefault()
+
         output = self.setTestsOutputs('ryu-manager --use-stderr --ofp-tcp-listen-port=',' ryu-rfproxy/rfproxy.py', self.port)
         self.addTest("ps aux | grep rfproxy","find",output)
 
         output =  self.setTestsOutputs('127.0.0.1:', '', self.port)
-        cmd = "netstat -plant | grep" +  str(self.port)
+        cmd = "netstat -plant | grep " +  str(self.port)
         self.addTest(cmd,"find",output)
 
         self.logger = logging.getLogger("Test_RFProxy")
         self.logger.info("\n")
         self.logger.info("================Test rfproxy class Begin==================")
+
         self.evaluate()
         self.verify()
         self.analyse()
@@ -134,7 +132,6 @@ class RFClient(RFApps):
 
         In this case modify cmd in self.tests by adding list of tests with vm names
         '''
-        #return str(cmd) + str(param)
         self.port = param
 
     def run_tests(self):
@@ -158,6 +155,7 @@ class RFClient(RFApps):
         self.logger = logging.getLogger("Test_RFClient")
         self.logger.info("\n")
         self.logger.info("================Test rfclient class Begin==================")
+
         self.evaluate()
         self.verify()
         self.analyse()

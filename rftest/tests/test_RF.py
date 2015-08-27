@@ -14,10 +14,10 @@ from subprocess import Popen, PIPE
 
 logging.basicConfig(
     filename = 'RFtest.log',
-    #level=logging.INFO,
     level=logging.DEBUG,
     format='%(asctime)s %(name)-15s %(levelname)-8s %(message)s',
-    datefmt='%b %d %H:%M:%S'
+    datefmt='%b %d %H:%M:%S',
+    mode = 'w'
     )
 
 class Tests:
@@ -45,7 +45,6 @@ class Tests:
         self.setUpTests = {}
         self.logger = None
 
-    #def setTestsToRun(self, *kargs, **kwargs):
     def setTestsToRun(self, **kwargs):
         '''
         fill self.testsToRun with proper arguments
@@ -53,10 +52,6 @@ class Tests:
 
         define if tests will use pytest or not (self.use_pytest = False)
         '''
-        print "saikrishna setTestsToRun"
-        print "%s"%( kwargs)
-        #if 'pytest' in kwargs.keys():
-        #    self.use_pytest = kwargs['pytest']
 
         #If kwargs is empty leave the testsToRun dictionary with default arguments.
         if kwargs:
@@ -68,7 +63,6 @@ class Tests:
         '''
         fill self.testsParams with arguments
         '''
-        print "saikrishna configureTests"
         if kwargs:
             self.testsParams.clear()
             for key,param in kwargs.items():
@@ -82,7 +76,6 @@ class Tests:
         in json or raw formats
         (first let`s save in raw format)
         '''
-        print "saikrishna setTestsOutputFormat"
         self.outputFormat.clear()
         if kwargs:
             for key,formats in kwargs.items():
@@ -94,7 +87,6 @@ class Tests:
         in json or raw formats
         (first let`s save in raw format)
         '''
-        print "saikrishna setTestsOutputModes"
         self.outputModes.clear()
         if kwargs:
             for key,modes in kwargs.items():
@@ -123,31 +115,28 @@ class Tests:
         :output_dir: directory to store logs
         '''
 
-        print "saikrishna setup"
-        self.logger = logging.getLogger("test_RF Generic")
+        self.logger = logging.getLogger(__name__)
         #self.logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s %(name)-15s %(levelname)-8s %(message)s")
 
         #INFO handler
-        handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Output.log"),"w", encoding=None, delay="true", maxBytes=20, backupCount=5)
+        #handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Output.log"),"a", encoding=None, delay="true", maxBytes=20, backupCount=5)
+        handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Output.log"),"a")
         handler.setLevel(logging.INFO)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
         #DEBUG handler
-        handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Debug.log"),"w", encoding=None, delay="true", maxBytes=20, backupCount=5)
+        handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Debug.log"),"a", encoding=None, delay="true", maxBytes=20, backupCount=5)
         handler.setLevel(logging.DEBUG)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
         #ERROR handler
-        handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Error.log"),"w", encoding=None, delay="true", maxBytes=20, backupCount=5)
+        handler = logging.handlers.RotatingFileHandler(os.path.join(output_dir, "Error.log"),"a", encoding=None, delay="true", maxBytes=20, backupCount=5)
         handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-
-        #self.logger.debug("saikrishna")
-        #self.logger.info("saikrishna")
 
     def findTests(self):
         '''
@@ -158,7 +147,6 @@ class Tests:
                 following self.testParams
             this dict will be used to be used in runTests function
         '''
-        #self.logger.debug("findtests()")
 
         # Find all the files starting with test_* and store output to 'matches' list.
         path = os.getcwd()# This should be pointing to /RouteFlow/rftest/tests
@@ -171,9 +159,7 @@ class Tests:
         # Check if class is marked to run tests
         # If so, Create an object for the corresponding class, by referring to CATALOGUE
         for testName,toRun in self.testsToRun.items():
-            print testName,toRun, Tests.CATALOGUE.keys()
             if toRun == True:
-                #self.logger.debug("%s to run", testName)
                 for i in Tests.CATALOGUE.keys():
                     if i.find(testName) != -1:
                         for obj in matches:
@@ -187,11 +173,9 @@ class Tests:
                                     module = __import__(obj)
                                     #getattr(li, "pop") is the same as calling li.pop
                                     class_ = getattr(module, Tests.CATALOGUE[obj])
-                                    print class_
                                     self.setUpTests[obj] = class_(self.logger)
                                     for confkey,confvalues in self.testsParams.items():
                                         if testName == confkey:
-                                            print "Mongoooo %s", confkey
                                             self.setUpTests[obj].setTestsParams(confvalues)
 
     def runTests(self):
@@ -205,12 +189,6 @@ class Tests:
             Using dict returned by setup (ex: self.setupTests)
             call run_tests for each object
         '''
-        # call setup with the name argument. This name will be used by logger.
-        # The name is an itervalue from self.testsToRun dictionary. Pass each key as an argument, if the corresponding value is true.
-        #self.setTestsOutputModes() #This line is temporary. remove it if it is visible in vandervecken.
-        #for key,tests in self.testsToRun.items():
-        #    if tests == True:
-        #       logger =  self.setup(str(key),os.getcwd()) #pass this logger as an argument while calling tests.
 
         for test in self.setUpTests.keys():
             self.setUpTests[test].run_tests()
@@ -247,12 +225,11 @@ class RFUnitTests(object):
         #This approach is fine as long as we follow the non-threading approach. are we planning to use threads?? not in near future.
         if self.evaluateDictionary:
             self.evaluateDictionary.clear()
+        self.logger.info("\n")
         for key,value in self.tests.items():
             self.logger.info("running test : %s", key)
             sp = subprocess.Popen(key,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
             out,err = sp.communicate()
-            #self.logger.debug("evaluate function() output : %s", out)
-            #self.logger.debug("evaluate function() error: %s", err)
             self.evaluateDictionary[key] = {'out' : str(out),
                                             'err' : str(err), }
 
@@ -276,26 +253,18 @@ class RFUnitTests(object):
            'out': 'sai krishnaalskdfkaskj dp0'},}
         '''
 
-        #self.logger.info("verify function()")
-
         #key of self.evaluateDictionary is always equal to key of self.tests dictionary.
         #This is how data structure is built.Hence tests[inputs] will work.
-        #print self.evaluateDictionary.items()
-        #self.logger.debug("begin evaluateDictionary")
-        #self.logger.debug(self.evaluateDictionary)
-        #self.logger.debug("end evaluateDictionary")
         
+        self.logger.info("\n")
         for cmdInput,outErrDict in self.evaluateDictionary.items():
             self.logger.info("verifying test : %s", cmdInput)
-            print "verifying test : %s", cmdInput
-            print "1"
             for keys,values in outErrDict.items():
                 # Logic: If err value exists, do not check for out
                 # If out exists, run method and validate tests['output'] with 'out' of outErrDict.
                 # Fill in assert:True if 'output'.method = 'out'
                 # else, assert:False.
                 print '2'
-                #if keys == 'err' and values != '':
                 if keys == 'err':
                     print '3'
                     self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
@@ -323,18 +292,13 @@ class RFUnitTests(object):
         self.logger.info("ERROR\n %s", err)
         No need to write assertion
         '''
-        #self.logger.info("function analyse() ")
-        #self.logger.debug(self.verifyDictionary)
-        #self.logger.info("End verifyDictionary ")
+        self.logger.info("\n")
         for keys,values in self.verifyDictionary.items():
             self.logger.info("analysing test : %s", keys)
             if values['assert'] == True:
                 self.logger.info("testcase with command %s PASSED ", keys)
-                #self.logger.info("%s OUTPUT %s", keys, values['result'])
             elif values['assert'] == False:
                 self.logger.info("testcase with command %s FAILED ", keys)
-                #self.logger.error("%s ERROR %s", keys, values)
-                #self.logger.error("%s ERROR %s", keys, values['resuly'])
 
     def run_tests(self):
         '''
@@ -383,20 +347,16 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     testsobj = Tests()
-    #testsobj.setTestsToRun(args) #args.testcases will be a dictionary that is passed.
-    #testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
-    #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
-    #kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'Connectivity':True}
+
     kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True}
     args = ("true",1)
-    #testsobj.setTestsToRun(*args,**kwargs) #args.testcases will be a dictionary that is passed.
     testsobj.setTestsToRun(**kwargs) #args.testcases will be a dictionary that is passed.
-    #testsobj.setTestsToRun() #args.testcases will be a dictionary that is passed.
-    #testsobj.configureTests(mongo = args.mongoport, containers = args.lxc, rfapp = args.rfapps)
     testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1', RFApps = ['RFServer','RFClient','RFProxy'])
+
     testsobj.setTestsOutputFormat()
     testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
 
     testsobj.setup(os.path.dirname(os.path.realpath(__file__)))
+
     testsobj.findTests()
     testsobj.runTests()
