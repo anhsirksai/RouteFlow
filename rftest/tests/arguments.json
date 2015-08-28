@@ -1,0 +1,5 @@
+{
+    "testsToRun": {"OVS": true, "Containers": true, "Mongo": true, "RFApps": true, "Connectivity" : true},
+    "configureTests" : {"Mongo" : 5056, "Containers" : "rfvmA", "Connectivity" : "rfvm1", "RFApps" : ["RFServer","RFClient","RFProxy"]},
+    "testsOutputModes": {"json": false, "txt":true }
+}

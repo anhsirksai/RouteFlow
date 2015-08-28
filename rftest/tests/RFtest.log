@@ -1,22 +1,142 @@
-Aug 26 14:40:52 Test_RFProxy    INFO     
+Aug 28 13:50:54 Test_RFProxy    INFO     
 
-Aug 26 14:40:52 Test_RFProxy    INFO     ================Test rfproxy class Begin==================
-Aug 26 14:40:52 Test_RFProxy    INFO     running test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFProxy    INFO     running test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFProxy    INFO     verifying test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFProxy    INFO     verifying test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFProxy    INFO     analysing test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFProxy    INFO     testcase with command netstat -plant | grep6653 FAILED 
-Aug 26 14:40:52 Test_RFProxy    INFO     analysing test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFProxy    INFO     testcase with command ps aux | grep rfproxy FAILED 
-Aug 26 14:40:52 Test_Containers INFO     
+Aug 28 13:50:54 Test_RFProxy    INFO     ================Test rfproxy class Begin==================
+Aug 28 13:50:54 Test_RFProxy    INFO     
 
-Aug 26 14:40:52 Test_Containers INFO     =============Test containers class Begin==================
-Aug 26 14:40:52 Test_Containers INFO     +++ This test case is to list down the currently 'running', 'stopped' and 'Frozen' list of containers +++
-Aug 26 14:40:52 Test_Containers INFO     running test : sudo lxc-list -s
-Aug 26 14:40:52 Test_Containers INFO     testcase with command sudo lxc-list -s PASSED 
-Aug 26 14:40:52 Test_Containers INFO     Status of containers
-Aug 26 14:40:52 Test_Containers INFO     
+Aug 28 13:50:54 Test_RFProxy    INFO     running test : ps aux | grep rfproxy
+Aug 28 13:50:54 Test_RFProxy    INFO     running test : netstat -plant | grep 6653
+Aug 28 13:50:54 Test_RFProxy    INFO     
+
+Aug 28 13:50:54 Test_RFProxy    INFO     verifying test : ps aux | grep rfproxy
+Aug 28 13:50:54 Test_RFProxy    INFO     verifying test : netstat -plant | grep 6653
+Aug 28 13:50:54 Test_RFProxy    INFO     
+
+Aug 28 13:50:54 Test_RFProxy    INFO     analysing test : ps aux | grep rfproxy
+Aug 28 13:50:54 Test_RFProxy    INFO     testcase with command ps aux | grep rfproxy FAILED 
+Aug 28 13:50:54 Test_RFProxy    INFO     analysing test : netstat -plant | grep 6653
+Aug 28 13:50:54 Test_RFProxy    INFO     testcase with command netstat -plant | grep 6653 FAILED 
+Aug 28 13:50:54 Test_Containers INFO     
+
+Aug 28 13:50:54 Test_Containers INFO     =============Test containers class Begin==================
+Aug 28 13:50:54 Test_Containers INFO     +++ This test case is to list down the currently 'running', 'stopped' and 'Frozen' list of containers +++
+Aug 28 13:50:54 Test_Containers INFO     running test : sudo lxc-list -s
+Aug 28 13:50:54 Test_Containers INFO     testcase with command sudo lxc-list -s PASSED 
+Aug 28 13:50:54 Test_Containers INFO     Status of containers
+Aug 28 13:50:54 Test_Containers INFO     
+
+ RUNNING
+
+FROZEN
+
+STOPPED
+  b1
+  b2
+  base
+  my-container
+  rfvm1
+  rfvmA
+  rfvmB
+  rfvmC
+  rfvmD
+
+
+Aug 28 13:50:54 Test_RFClient   INFO     
+
+Aug 28 13:50:54 Test_RFClient   INFO     ================Test rfclient class Begin==================
+Aug 28 13:50:54 Test_RFClient   INFO     
+
+Aug 28 13:50:54 Test_RFClient   INFO     running test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     running test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     running test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     
+
+Aug 28 13:50:54 Test_RFClient   INFO     verifying test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     
+
+Aug 28 13:50:54 Test_RFClient   INFO     analysing test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     testcase with command sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 13:50:54 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 13:50:54 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 13:50:54 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 13:50:54 Test_OVS        INFO     
+
+Aug 28 13:50:54 Test_OVS        INFO     ==========Test OVS class Begin===============
+Aug 28 13:50:54 Test_OVS        INFO     
+
+Aug 28 13:50:54 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     running test : ps aux | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     
+
+Aug 28 13:50:54 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     verifying test : ps aux | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     
+
+Aug 28 13:50:54 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 FAILED 
+Aug 28 13:50:54 Test_OVS        INFO     analysing test : sudo ovs-dpctl show | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     testcase with command sudo ovs-dpctl show | grep dp0 FAILED 
+Aug 28 13:50:54 Test_OVS        INFO     analysing test : ps aux | grep dp0
+Aug 28 13:50:54 Test_OVS        INFO     testcase with command ps aux | grep dp0 FAILED 
+Aug 28 13:50:54 Test_RFServer   INFO     
+
+Aug 28 13:50:54 Test_RFServer   INFO     =============Test rfserver class Begin================
+Aug 28 13:50:54 Test_RFServer   INFO     
+
+Aug 28 13:50:54 Test_RFServer   INFO     running test : ps aux | grep rfserver
+Aug 28 13:50:54 Test_RFServer   INFO     
+
+Aug 28 13:50:54 Test_RFServer   INFO     verifying test : ps aux | grep rfserver
+Aug 28 13:50:54 Test_RFServer   INFO     
+
+Aug 28 13:50:54 Test_RFServer   INFO     analysing test : ps aux | grep rfserver
+Aug 28 13:50:54 Test_RFServer   INFO     testcase with command ps aux | grep rfserver FAILED 
+Aug 28 13:50:54 Test_Mongo      INFO     
+
+Aug 28 13:50:54 Test_Mongo      INFO     =========Test Mongod class Begin==============
+Aug 28 13:50:54 Test_Mongo      INFO     
+
+Aug 28 13:50:54 Test_Mongo      INFO     running test : ps aux | grep mongo
+Aug 28 13:50:54 Test_Mongo      INFO     running test : sudo netstat -plant | grep 5056
+Aug 28 13:50:54 Test_Mongo      INFO     
+
+Aug 28 13:50:54 Test_Mongo      INFO     verifying test : ps aux | grep mongo
+Aug 28 13:50:54 Test_Mongo      INFO     verifying test : sudo netstat -plant | grep 5056
+Aug 28 13:50:54 Test_Mongo      INFO     
+
+Aug 28 13:50:54 Test_Mongo      INFO     analysing test : ps aux | grep mongo
+Aug 28 13:50:54 Test_Mongo      INFO     testcase with command ps aux | grep mongo FAILED 
+Aug 28 13:50:54 Test_Mongo      INFO     analysing test : sudo netstat -plant | grep 5056
+Aug 28 13:50:54 Test_Mongo      INFO     testcase with command sudo netstat -plant | grep 5056 FAILED 
+Aug 28 14:01:19 Test_RFProxy    INFO     
+
+Aug 28 14:01:19 Test_RFProxy    INFO     ================Test rfproxy class Begin==================
+Aug 28 14:01:19 Test_RFProxy    INFO     
+
+Aug 28 14:01:19 Test_RFProxy    INFO     running test : ps aux | grep rfproxy
+Aug 28 14:01:19 Test_RFProxy    INFO     running test : netstat -plant | grep 6653
+Aug 28 14:01:19 Test_RFProxy    INFO     
+
+Aug 28 14:01:19 Test_RFProxy    INFO     verifying test : ps aux | grep rfproxy
+Aug 28 14:01:19 Test_RFProxy    INFO     verifying test : netstat -plant | grep 6653
+Aug 28 14:01:19 Test_RFProxy    INFO     
+
+Aug 28 14:01:19 Test_RFProxy    INFO     analysing test : ps aux | grep rfproxy
+Aug 28 14:01:19 Test_RFProxy    INFO     testcase with command ps aux | grep rfproxy FAILED 
+Aug 28 14:01:19 Test_RFProxy    INFO     analysing test : netstat -plant | grep 6653
+Aug 28 14:01:19 Test_RFProxy    INFO     testcase with command netstat -plant | grep 6653 FAILED 
+Aug 28 14:01:19 Test_Containers INFO     
+
+Aug 28 14:01:19 Test_Containers INFO     =============Test containers class Begin==================
+Aug 28 14:01:19 Test_Containers INFO     +++ This test case is to list down the currently 'running', 'stopped' and 'Frozen' list of containers +++
+Aug 28 14:01:19 Test_Containers INFO     running test : sudo lxc-list -s
+Aug 28 14:01:19 Test_Containers INFO     testcase with command sudo lxc-list -s PASSED 
+Aug 28 14:01:19 Test_Containers INFO     Status of containers
+Aug 28 14:01:19 Test_Containers INFO     
 
  RUNNING
   b1
@@ -34,79 +154,179 @@ STOPPED
   rfvmD
 
 
-Aug 26 14:40:52 Test_RFClient   INFO     
+Aug 28 14:01:19 Test_RFClient   INFO     
 
-Aug 26 14:40:52 Test_RFClient   INFO     ================Test rfclient class Begin==================
-Aug 26 14:40:52 Test_RFClient   INFO     running test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFClient   INFO     running test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     running test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     running test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     running test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFClient   INFO     verifying test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFClient   INFO     verifying test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFClient   INFO     verifying test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     analysing test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFClient   INFO     testcase with command netstat -plant | grep6653 FAILED 
-Aug 26 14:40:52 Test_RFClient   INFO     analysing test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     testcase with command sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient PASSED 
-Aug 26 14:40:52 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient FAILED 
-Aug 26 14:40:52 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient FAILED 
-Aug 26 14:40:52 Test_RFClient   INFO     analysing test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFClient   INFO     testcase with command ps aux | grep rfproxy FAILED 
-Aug 26 14:40:52 Test_OVS        INFO     
+Aug 28 14:01:19 Test_RFClient   INFO     ================Test rfclient class Begin==================
+Aug 28 14:01:19 Test_RFClient   INFO     
 
-Aug 26 14:40:52 Test_OVS        INFO     ==========Test OVS class Begin===============
-Aug 26 14:40:52 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     running test : ps aux | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     verifying test : ps aux | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 PASSED 
-Aug 26 14:40:52 Test_OVS        INFO     analysing test : sudo ovs-dpctl show | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     testcase with command sudo ovs-dpctl show | grep dp0 PASSED 
-Aug 26 14:40:52 Test_OVS        INFO     analysing test : ps aux | grep dp0
-Aug 26 14:40:52 Test_OVS        INFO     testcase with command ps aux | grep dp0 FAILED 
-Aug 26 14:40:52 Test_RFServer   INFO     
+Aug 28 14:01:19 Test_RFClient   INFO     running test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     running test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     running test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     
 
-Aug 26 14:40:52 Test_RFServer   INFO     =============Test rfserver class Begin================
-Aug 26 14:40:52 Test_RFServer   INFO     running test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFServer   INFO     running test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFServer   INFO     running test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     running test : ps aux | grep rfserver
-Aug 26 14:40:52 Test_RFServer   INFO     running test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     running test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     verifying test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFServer   INFO     verifying test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFServer   INFO     verifying test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     verifying test : ps aux | grep rfserver
-Aug 26 14:40:52 Test_RFServer   INFO     verifying test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     verifying test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     analysing test : ps aux | grep rfproxy
-Aug 26 14:40:52 Test_RFServer   INFO     testcase with command ps aux | grep rfproxy FAILED 
-Aug 26 14:40:52 Test_RFServer   INFO     analysing test : netstat -plant | grep6653
-Aug 26 14:40:52 Test_RFServer   INFO     testcase with command netstat -plant | grep6653 FAILED 
-Aug 26 14:40:52 Test_RFServer   INFO     analysing test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     testcase with command sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient PASSED 
-Aug 26 14:40:52 Test_RFServer   INFO     analysing test : ps aux | grep rfserver
-Aug 26 14:40:52 Test_RFServer   INFO     testcase with command ps aux | grep rfserver FAILED 
-Aug 26 14:40:52 Test_RFServer   INFO     analysing test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     testcase with command sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient FAILED 
-Aug 26 14:40:52 Test_RFServer   INFO     analysing test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
-Aug 26 14:40:52 Test_RFServer   INFO     testcase with command sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient FAILED 
-Aug 26 14:40:52 Test_Mongo      INFO     
+Aug 28 14:01:19 Test_RFClient   INFO     verifying test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     
 
-Aug 26 14:40:52 Test_Mongo      INFO     =========Test Mongod class Begin==============
-Aug 26 14:40:52 Test_Mongo      INFO     running test : ps aux | grep mongo
-Aug 26 14:40:52 Test_Mongo      INFO     running test : sudo netstat -plant | grep 5056
-Aug 26 14:40:52 Test_Mongo      INFO     verifying test : ps aux | grep mongo
-Aug 26 14:40:52 Test_Mongo      INFO     verifying test : sudo netstat -plant | grep 5056
-Aug 26 14:40:52 Test_Mongo      INFO     analysing test : ps aux | grep mongo
-Aug 26 14:40:52 Test_Mongo      INFO     testcase with command ps aux | grep mongo FAILED 
-Aug 26 14:40:52 Test_Mongo      INFO     analysing test : sudo netstat -plant | grep 5056
-Aug 26 14:40:52 Test_Mongo      INFO     testcase with command sudo netstat -plant | grep 5056 FAILED 
+Aug 28 14:01:19 Test_RFClient   INFO     analysing test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     testcase with command sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient PASSED 
+Aug 28 14:01:19 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 14:01:19 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 14:01:19 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 14:01:19 Test_OVS        INFO     
+
+Aug 28 14:01:19 Test_OVS        INFO     ==========Test OVS class Begin===============
+Aug 28 14:01:19 Test_OVS        INFO     
+
+Aug 28 14:01:19 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     running test : ps aux | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     
+
+Aug 28 14:01:19 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     verifying test : ps aux | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     
+
+Aug 28 14:01:19 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 PASSED 
+Aug 28 14:01:19 Test_OVS        INFO     analysing test : sudo ovs-dpctl show | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     testcase with command sudo ovs-dpctl show | grep dp0 PASSED 
+Aug 28 14:01:19 Test_OVS        INFO     analysing test : ps aux | grep dp0
+Aug 28 14:01:19 Test_OVS        INFO     testcase with command ps aux | grep dp0 FAILED 
+Aug 28 14:01:19 Test_RFServer   INFO     
+
+Aug 28 14:01:19 Test_RFServer   INFO     =============Test rfserver class Begin================
+Aug 28 14:01:19 Test_RFServer   INFO     
+
+Aug 28 14:01:19 Test_RFServer   INFO     running test : ps aux | grep rfserver
+Aug 28 14:01:20 Test_RFServer   INFO     
+
+Aug 28 14:01:20 Test_RFServer   INFO     verifying test : ps aux | grep rfserver
+Aug 28 14:01:20 Test_RFServer   INFO     
+
+Aug 28 14:01:20 Test_RFServer   INFO     analysing test : ps aux | grep rfserver
+Aug 28 14:01:20 Test_RFServer   INFO     testcase with command ps aux | grep rfserver FAILED 
+Aug 28 14:02:05 Test_RFProxy    INFO     
+
+Aug 28 14:02:05 Test_RFProxy    INFO     ================Test rfproxy class Begin==================
+Aug 28 14:02:05 Test_RFProxy    INFO     
+
+Aug 28 14:02:05 Test_RFProxy    INFO     running test : ps aux | grep rfproxy
+Aug 28 14:02:05 Test_RFProxy    INFO     running test : netstat -plant | grep 6653
+Aug 28 14:02:05 Test_RFProxy    INFO     
+
+Aug 28 14:02:05 Test_RFProxy    INFO     verifying test : ps aux | grep rfproxy
+Aug 28 14:02:05 Test_RFProxy    INFO     verifying test : netstat -plant | grep 6653
+Aug 28 14:02:05 Test_RFProxy    INFO     
+
+Aug 28 14:02:05 Test_RFProxy    INFO     analysing test : ps aux | grep rfproxy
+Aug 28 14:02:05 Test_RFProxy    INFO     testcase with command ps aux | grep rfproxy FAILED 
+Aug 28 14:02:05 Test_RFProxy    INFO     analysing test : netstat -plant | grep 6653
+Aug 28 14:02:05 Test_RFProxy    INFO     testcase with command netstat -plant | grep 6653 FAILED 
+Aug 28 14:02:05 Test_Containers INFO     
+
+Aug 28 14:02:05 Test_Containers INFO     =============Test containers class Begin==================
+Aug 28 14:02:05 Test_Containers INFO     +++ This test case is to list down the currently 'running', 'stopped' and 'Frozen' list of containers +++
+Aug 28 14:02:05 Test_Containers INFO     running test : sudo lxc-list -s
+Aug 28 14:02:06 Test_Containers INFO     testcase with command sudo lxc-list -s PASSED 
+Aug 28 14:02:06 Test_Containers INFO     Status of containers
+Aug 28 14:02:06 Test_Containers INFO     
+
+ RUNNING
+  b1
+  b2
+  rfvm1
+
+FROZEN
+
+STOPPED
+  base
+  my-container
+  rfvmA
+  rfvmB
+  rfvmC
+  rfvmD
+
+
+Aug 28 14:02:06 Test_RFClient   INFO     
+
+Aug 28 14:02:06 Test_RFClient   INFO     ================Test rfclient class Begin==================
+Aug 28 14:02:06 Test_RFClient   INFO     
+
+Aug 28 14:02:06 Test_RFClient   INFO     running test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     running test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     running test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     
+
+Aug 28 14:02:06 Test_RFClient   INFO     verifying test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     verifying test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     
+
+Aug 28 14:02:06 Test_RFClient   INFO     analysing test : sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     testcase with command sudo lxc-attach -n rfvm1 -- /bin/ps aux|grep rfclient PASSED 
+Aug 28 14:02:06 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b1 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 14:02:06 Test_RFClient   INFO     analysing test : sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient
+Aug 28 14:02:06 Test_RFClient   INFO     testcase with command sudo lxc-attach -n b2 -- /bin/ps aux|grep rfclient FAILED 
+Aug 28 14:02:06 Test_OVS        INFO     
+
+Aug 28 14:02:06 Test_OVS        INFO     ==========Test OVS class Begin===============
+Aug 28 14:02:06 Test_OVS        INFO     
+
+Aug 28 14:02:06 Test_OVS        INFO     running test : sudo ovs-vsctl show | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     running test : sudo ovs-dpctl show | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     running test : ps aux | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     
+
+Aug 28 14:02:06 Test_OVS        INFO     verifying test : sudo ovs-vsctl show | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     verifying test : sudo ovs-dpctl show | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     verifying test : ps aux | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     
+
+Aug 28 14:02:06 Test_OVS        INFO     analysing test : sudo ovs-vsctl show | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     testcase with command sudo ovs-vsctl show | grep dp0 PASSED 
+Aug 28 14:02:06 Test_OVS        INFO     analysing test : sudo ovs-dpctl show | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     testcase with command sudo ovs-dpctl show | grep dp0 PASSED 
+Aug 28 14:02:06 Test_OVS        INFO     analysing test : ps aux | grep dp0
+Aug 28 14:02:06 Test_OVS        INFO     testcase with command ps aux | grep dp0 FAILED 
+Aug 28 14:02:06 Test_RFServer   INFO     
+
+Aug 28 14:02:06 Test_RFServer   INFO     =============Test rfserver class Begin================
+Aug 28 14:02:06 Test_RFServer   INFO     
+
+Aug 28 14:02:06 Test_RFServer   INFO     running test : ps aux | grep rfserver
+Aug 28 14:02:06 Test_RFServer   INFO     
+
+Aug 28 14:02:06 Test_RFServer   INFO     verifying test : ps aux | grep rfserver
+Aug 28 14:02:06 Test_RFServer   INFO     
+
+Aug 28 14:02:06 Test_RFServer   INFO     analysing test : ps aux | grep rfserver
+Aug 28 14:02:06 Test_RFServer   INFO     testcase with command ps aux | grep rfserver FAILED 
+Aug 28 14:02:06 Test_Connectivity INFO     Test connectivity class Begin
+Aug 28 14:02:06 Test_Connectivity INFO     
+
+Aug 28 14:02:06 Test_Connectivity INFO     
+
+Aug 28 14:02:06 Test_Connectivity INFO     
+
+Aug 28 14:02:06 Test_Mongo      INFO     
+
+Aug 28 14:02:06 Test_Mongo      INFO     =========Test Mongod class Begin==============
+Aug 28 14:02:06 Test_Mongo      INFO     
+
+Aug 28 14:02:06 Test_Mongo      INFO     running test : ps aux | grep mongo
+Aug 28 14:02:06 Test_Mongo      INFO     running test : sudo netstat -plant | grep 5056
+Aug 28 14:02:06 Test_Mongo      INFO     
+
+Aug 28 14:02:06 Test_Mongo      INFO     verifying test : ps aux | grep mongo
+Aug 28 14:02:06 Test_Mongo      INFO     verifying test : sudo netstat -plant | grep 5056
+Aug 28 14:02:06 Test_Mongo      INFO     
+
+Aug 28 14:02:06 Test_Mongo      INFO     analysing test : ps aux | grep mongo
+Aug 28 14:02:06 Test_Mongo      INFO     testcase with command ps aux | grep mongo FAILED 
+Aug 28 14:02:06 Test_Mongo      INFO     analysing test : sudo netstat -plant | grep 5056
+Aug 28 14:02:06 Test_Mongo      INFO     testcase with command sudo netstat -plant | grep 5056 FAILED 

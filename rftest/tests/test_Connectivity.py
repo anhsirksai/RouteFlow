@@ -1,4 +1,5 @@
 from test_RF import RFUnitTests
+import logging
 import subprocess
 
 class Connectivity(RFUnitTests):
@@ -128,16 +129,18 @@ class Connectivity(RFUnitTests):
         '''
         self.containerInterfaces[name] = getContainerInterfaces(name)
 
-    def addTest(self, cmd, method, output, **kwargs):
+    #def addTest(self, cmd, method, output, **kwargs):
+    def addTest(self, cmd, method, output):
         '''
         add in self.tests new tests following the TEST structure
         '''
-        #self.tests[str(cmd)] = {'method':str(method),
-        #                       'output':str(output), kwargs}
+        self.tests[str(cmd)] = {'method':str(method),
+                                'output':str(output)}
         pass
 
-    def setTestsParams(self, cmd, param):
+    def setTestsParams(self, param):
         '''
+        setTestsParams(Mongo, 27017)
         Define for example self.containernames, self.mongoport, self.controllerport
         for Container, Mongo, Controller classes respectively
         In this case modify cmd in self.tests
@@ -194,7 +197,7 @@ class Connectivity(RFUnitTests):
                     if cname != containerName:
                         cmd = "lxc-ps -n {name} ping -c3 {target}"
                         cmd.format(name=containerName, target = ipaddr)
-                        addTest(cmd, method, output, name = containerName)
+                        addTest(cmd, method, output)
 
         #addTest(cmd, method, output, name = 'b2')
         #addTest(cmd, method, output, name = 'b1')

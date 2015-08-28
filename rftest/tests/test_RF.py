@@ -38,7 +38,7 @@ class Tests:
 
     def __init__(self):
         self.testsToRun = {'OVS':True, 'Containers':False, 'RFApps':False}
-        self.testsParams = {'Mongo':27017, 'Containers':['rfvmA','rfvmB']}#, 'RFApps':['rfproxy','rfserver']}
+        self.testsParams = {'Mongo':27017, 'Containers':['rfvmA','rfvmB'], 'Connectivity': ['rfvm1','b1','b2']}#, 'RFApps':['rfproxy','rfserver']}
         self.outputFormat = {'txt':False, 'terminal':False}
         self.outputModes = {'json':False, 'raw':False}
         self.use_pytest = False
@@ -176,6 +176,7 @@ class Tests:
                                     self.setUpTests[obj] = class_(self.logger)
                                     for confkey,confvalues in self.testsParams.items():
                                         if testName == confkey:
+                                            print confvalues
                                             self.setUpTests[obj].setTestsParams(confvalues)
 
     def runTests(self):
@@ -394,11 +395,17 @@ if __name__ == '__main__':
     args = parser.parse_args()
     testsobj = Tests()
 
+    args_fp = open('arguments.json', 'r')
+    cmdArgs= json.load(args_fp)
+    print cmdArgs
+
     kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True }
     #kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True, 'Connectivity':True}
     args = ("true",1)
-    testsobj.setTestsToRun(**kwargs) #args.testcases will be a dictionary that is passed.
-    testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1', RFApps = ['RFServer','RFClient','RFProxy'])
+    testsobj.setTestsToRun(**cmdArgs['testsToRun']) #args.testcases will be a dictionary that is passed.
+
+    # testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1', RFApps = ['RFServer','RFClient','RFProxy'])
+    testsobj.configureTests(**cmdArgs['configureTests'])
 
     testsobj.setTestsOutputFormat()
     testsobj.setTestsOutputModes() #dictionary : {'json':False, 'txt':True}
