@@ -7,8 +7,6 @@ import subprocess
 import json
 import fnmatch
 import logging.handlers
-#import unittest
-#import pytest
 
 from subprocess import Popen, PIPE
 
@@ -66,7 +64,6 @@ class Tests:
         if kwargs:
             self.testsParams.clear()
             for key,param in kwargs.items():
-                #if key in self.testsParams.keys():
                 self.testsParams[key] = param
 
     def setTestsOutputFormat(self, **kwargs):
@@ -176,7 +173,6 @@ class Tests:
                                     self.setUpTests[obj] = class_(self.logger)
                                     for confkey,confvalues in self.testsParams.items():
                                         if testName == confkey:
-                                            print confvalues
                                             self.setUpTests[obj].setTestsParams(confvalues)
 
     def runTests(self):
@@ -215,7 +211,7 @@ class RFUnitTests(object):
         self.logger = logger
         self.evaluateDictionary = {}
         self.verifyDictionary = {}
-        
+
     def findFunction(self, output):
         '''
         find packet loss percentage in ping result
@@ -227,7 +223,7 @@ class RFUnitTests(object):
         64 bytes from 172.31.2.2: icmp_req=1 ttl=63 time=3.78 ms
         64 bytes from 172.31.2.2: icmp_req=2 ttl=63 time=3.60 ms
         64 bytes from 172.31.2.2: icmp_req=3 ttl=63 time=3.07 ms
-        
+
         --- 172.31.2.2 ping statistics ---
         3 packets transmitted, 3 received, 0% packet loss, time 2016ms
         rtt min/avg/max/mdev = 3.072/3.486/3.781/0.305 ms
@@ -237,7 +233,7 @@ class RFUnitTests(object):
         From 10.0.2.2 icmp_seq=1 Destination Net Unreachable
         From 10.0.2.2 icmp_seq=2 Destination Net Unreachable
         From 10.0.2.2 icmp_seq=3 Destination Net Unreachable
-        
+
         --- 8.8.8.8 ping statistics ---
         3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2012ms
         '''
@@ -247,8 +243,8 @@ class RFUnitTests(object):
         #output,error = sp.communicate()
 
         if ('unreachable' in output):
-            print False
-        # The packet loss when connected will usually be 0%, 
+            return False
+        # The packet loss when connected will usually be 0%,
         # To make sure, any thing below 100% is also counted as connected.
         elif('0% packet loss' in out) or ('100% packet loss' not in out):
             return True
@@ -293,7 +289,7 @@ class RFUnitTests(object):
 
         #key of self.evaluateDictionary is always equal to key of self.tests dictionary.
         #This is how data structure is built.Hence tests[inputs] will work.
-        
+
         self.logger.info("\n")
         for cmdInput,outErrDict in self.evaluateDictionary.items():
             self.logger.info("verifying test : %s", cmdInput)
@@ -302,33 +298,21 @@ class RFUnitTests(object):
                 # If out exists, run method and validate tests['output'] with 'out' of outErrDict.
                 # Fill in assert:True if 'output'.method = 'out'
                 # else, assert:False.
-                print '2'
                 if keys == 'err':
-                    print '3'
                     self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
-                elif keys == 'out' : 
+                elif keys == 'out' :
                     if values == '':
-                        print 3.5
                         self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
                     else:
-                        print '4'        
                         if self.tests[cmdInput]['method'] == 'find':
-                            print '5'
                             if values.find(self.tests[cmdInput]['output']) != -1:
-                                print '6'
                                 self.verifyDictionary[cmdInput] = {'assert':True, 'result':values}
-
                         elif self.tests[cmdInput]['method'] == 'findfp':
-                            print '7'
                             #TODO : The findfp should be handled as a closure.
                             if self.findFunction(values) == True:
                                 self.verifyDictionary[cmdInput] = {'assert':True, 'result':values}
                             else :
                                 self.verifyDictionary[cmdInput] = {'assert':False, 'result':values}
- 
-                            #else : TODO case for custom find function.
-                            #if self.tests[inputs]['method'] == 'findfp':
-                            #This is a part of the function passed as argument from test_Connectivity file.
 
     def analyse(self):
         '''
@@ -355,53 +339,18 @@ class RFUnitTests(object):
         #pass
 
 if __name__ == '__main__':
-    description = 'RFTest suite, to run the tests and determine the state of system'
-    epilog = 'Report bugs to: https://github.com/routeflow/RouteFlow/issues'
+    '''
+    RFTest suite, to run the tests and determine the state of system
+    Report bugs to: https://github.com/routeflow/RouteFlow/issues
+    '''
 
-    parser = argparse.ArgumentParser(description=description, epilog=epilog)
-
-    #run pytest(y/n)
-    parser.add_argument('-p', '--pytest', default=False, type = bool,
-                        help='Run tests with pytest(True/False)')
-
-    #accept a list of test modules to be run.
-    #parser.add_argument('-tc', '--testcases', choices =['ovs','rfapps','mongo','containers'],
-    #                   help='Testcases to be run.choose form the list specified')
-
-    parser.add_argument('-tc', '--testcases', type=json.loads,
-                        help="Testcases to be run.enter on a dict format like :{'ovs':True, 'containers':False, 'rfapps':True}")
-
-    #list of containers : either user gives his own container names(option:l) or chooses from the list(option:ln)
-    parser.add_argument('-l', '--lxc', nargs='*',
-                        help='Lxc container name, should be given to verify, default not supported, zero or more container names accepted')
-    parser.add_argument('-ln', '--lxcnames', choices =['rfvm1','b1','b2','rfvmA','rfvmB'],
-                        help='Lxc container name, should be given to verify, default not supported,to be choosen from the list')
-
-    #list of rfapps
-    parser.add_argument('-rf', '--rfapps', choices = ['rfserver', 'rfproxy', 'rfclient'],
-                        help='list of rfapps to be tested. select from the choice')
-
-    #accept the mongodb port. default 27017
-    parser.add_argument('-m', '--mongoport', default=27017, type = int,
-                        help='port number to verify running of mongodb')
-
-    #accept controller ports. defaults specified.
-    parser.add_argument('-c', '--controllerport1', default=6533, type = int,
-                        help='rfproxy controller port1')
-
-    parser.add_argument('-cc', '--controllerport2', default=6653, type = int,
-                        help='rfproxy controller port2')
-
-    args = parser.parse_args()
     testsobj = Tests()
 
     args_fp = open('arguments.json', 'r')
     cmdArgs= json.load(args_fp)
-    print cmdArgs
+    #print cmdArgs
 
-    kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True }
     #kwargs = {'OVS':True,'Containers':True, 'Mongo':True, 'RFApps':True, 'Connectivity':True}
-    args = ("true",1)
     testsobj.setTestsToRun(**cmdArgs['testsToRun']) #args.testcases will be a dictionary that is passed.
 
     # testsobj.configureTests(Mongo = 5056, Containers = 'rfvmA', Connectivity = 'rfvm1', RFApps = ['RFServer','RFClient','RFProxy'])

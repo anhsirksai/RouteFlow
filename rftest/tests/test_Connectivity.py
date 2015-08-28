@@ -36,7 +36,7 @@ class Connectivity(RFUnitTests):
         172.31.2.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0
 
         In [36]: out1.splitlines(True)[2:]
-        Out[36]: 
+        Out[36]:
         ['0.0.0.0         172.31.1.1      0.0.0.0         UG    100    0        0 eth0\n',
          '172.31.1.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0\n']
 
@@ -46,11 +46,6 @@ class Connectivity(RFUnitTests):
             self.containerRoutes[name] = out.splitlines(True)[2:]
         elif err != '':
             self.logger.error(name, err)
-        #handle storing of only routes in the self.containerRoutes dictionary.
-        #out = getContainerRoutes(name)
-        #for line in out:
-        #    print line #handle storing of only routes in the self.containerRoutes dictionary.
-
 
     def getContainerInterfaces(self, name):
         '''
@@ -62,29 +57,29 @@ class Connectivity(RFUnitTests):
                      if i.split()[0] == 'lo':
                          pass
                      else:
-                         dd[i.split()[0]] = i.split()[1]           
-         
+                         dd[i.split()[0]] = i.split()[1]
+
          In [31]: dd
          Out[31]: {'eth0': '10.0.2.15/24', 'lxcbr0': '10.0.3.1/24'}
-         
+
         > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'
         172.31.1.2
 
-        > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1    
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | cut -d" " -f1
         172.31.1.2
 
-        > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'                  
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d'
         eth0
 
-        > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'                          
+        > sudo lxc-attach -n b1 -- /sbin/ifconfig -a | sed 's/[ \t].*//;/^$/d'
         eth0
         lo
         '''
         listIface = []
         dictIfIp = {}
 
-        #cmd = "sudo lxc-attach -n " + name + " -- /sbin/ifconfig -a | sed \'s/[ \t].*//;/^\(lo\|\)$/d\'"
-        cmd = "sudo lxc-attach -n rfvm1 -- /sbin/ifconfig -a | sed \'s/[ \t].*//;/^\(lo\|\)$/d\'"
+        cmd = "sudo lxc-attach -n " + name + " -- /sbin/ifconfig -a | sed \'s/[ \t].*//;/^\(lo\|\)$/d\'"
+        #cmd = "sudo lxc-attach -n rfvm1 -- /sbin/ifconfig -a | sed \'s/[ \t].*//;/^\(lo\|\)$/d\'"
         su = subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
         out,err = su.communicate()
 
@@ -93,8 +88,8 @@ class Connectivity(RFUnitTests):
             listIface.append(i)
         dictIfIp.clear()
         for i in listIface:
-            #cmd = "sudo lxc-attach -n" + name + " -- /sbin/ifconfig " + str(i) + "| grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\'"
-            cmd = "sudo lxc-attach -n rfvm1 -- /sbin/ifconfig " + str(i) + "| grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\'"
+            cmd = "sudo lxc-attach -n" + name + " -- /sbin/ifconfig " + str(i) + "| grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\'"
+            #cmd = "sudo lxc-attach -n rfvm1 -- /sbin/ifconfig " + str(i) + "| grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\'"
             su = subprocess.Popen(cmd,stderr=subprocess.PIPE,stdout=subprocess.PIPE,shell = True)
             out,err = su.communicate()
             dictIfIp[i] = out
@@ -129,14 +124,12 @@ class Connectivity(RFUnitTests):
         '''
         self.containerInterfaces[name] = getContainerInterfaces(name)
 
-    #def addTest(self, cmd, method, output, **kwargs):
     def addTest(self, cmd, method, output):
         '''
         add in self.tests new tests following the TEST structure
         '''
         self.tests[str(cmd)] = {'method':str(method),
                                 'output':str(output)}
-        pass
 
     def setTestsParams(self, param):
         '''
@@ -199,9 +192,6 @@ class Connectivity(RFUnitTests):
                         cmd.format(name=containerName, target = ipaddr)
                         addTest(cmd, method, output)
 
-        #addTest(cmd, method, output, name = 'b2')
-        #addTest(cmd, method, output, name = 'b1')
-
     def run_tests(self):
         '''
         basically runs methods inherited with self.tests attribute
@@ -209,14 +199,14 @@ class Connectivity(RFUnitTests):
         self.verify
         self.analyse
         '''
+        self.containerName = ['rfvm1', 'b1', 'b2']
         self.addTestsDefault()
         self.logger = logging.getLogger("Test_Connectivity")
-        self.logger.info("Test connectivity class Begin")
+        self.logger.info("\n")
+        self.logger.info("=============Test connectivity class Begin=========")
         self.evaluate()
         self.verify()
         self.analyse()
-
-
 
 
 class Topology(Connectivity):
